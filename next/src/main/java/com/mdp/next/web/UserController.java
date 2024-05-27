@@ -1,11 +1,18 @@
 package com.mdp.next.web;
 
 import org.springframework.http.*;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import com.mdp.next.service.UserService;
 import com.mdp.next.entity.*;
+import com.mdp.next.exception.ErrorResponse;
+
 import lombok.AllArgsConstructor;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import jakarta.validation.Valid;
 
 @AllArgsConstructor
 @RestController
@@ -25,18 +32,33 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<Object> createUser(@Valid @RequestBody User user, BindingResult result) {
+        if (result.hasErrors()) {
+            List<String> errors = new ArrayList<>();
+            result.getAllErrors().forEach((error) -> errors.add(error.getDefaultMessage())); 
+            ErrorResponse error = new ErrorResponse(errors);  
+            return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
     }
 
     @PutMapping("/{userID}")
-    public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable Long userID) {
+    public ResponseEntity<Object> updateUser(@Valid @RequestBody User user, BindingResult result, @PathVariable Long userID) {
+
+        if (result.hasErrors()) {
+            List<String> errors = new ArrayList<>();
+            result.getAllErrors().forEach((error) -> errors.add(error.getDefaultMessage())); 
+            ErrorResponse error = new ErrorResponse(errors);  
+            return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        }
+
         return new ResponseEntity<>(userService.updateUser(user.getEmail(), user.getAddress(), userID), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{userID}")
-    public void deleteUser(@PathVariable Long userID) {
+    public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long userID) {
         userService.deleteUser(userID);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

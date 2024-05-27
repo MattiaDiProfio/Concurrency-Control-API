@@ -3,7 +3,6 @@ package com.mdp.next.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.mdp.next.entity.Account;
 import com.mdp.next.entity.User;
 import com.mdp.next.repository.*;
 import com.mdp.next.exception.EntityNotFoundException;
@@ -30,6 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public User updateUser(String newEmail, String newAddress, Long userID) {
+        if (!userRepository.findById(userID).isPresent()) throw new EntityNotFoundException(userID, "user");
         User user = unwrapUser(userRepository.findById(userID), userID);
         user.setEmail(newEmail);
         user.setAddress(newAddress);
@@ -37,7 +37,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public void deleteUser(Long userID) {
-        userRepository.deleteById(userID);
+        if (!userRepository.findById(userID).isPresent()) throw new EntityNotFoundException(userID, "user");
+        else userRepository.deleteById(userID);
     }
 
     static User unwrapUser(Optional<User> entity, Long userID) {
