@@ -1,9 +1,9 @@
 package com.mdp.next.web;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import com.mdp.next.service.UserService;
-import com.mdp.next.entity.User;
+import com.mdp.next.entity.*;
 import lombok.AllArgsConstructor;
 import java.util.List;
 
@@ -16,27 +16,28 @@ public class UserController {
 
     @GetMapping("/{userID}")
     public ResponseEntity<User> getUser(@PathVariable String userID) {
-        return null;
+        return new ResponseEntity<>(userService.getUser(userID), HttpStatus.OK);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<User>> getUsers() {
-        return null;
+        return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
-        return null;
+        user.setAccount(new Account(user, 0.00, user.getID()));
+        return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
     }
 
     @PutMapping("/{userID}")
     public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable String userID) {
-        return null;
+        return new ResponseEntity<>(userService.updateUser(user.getEmail(), user.getAddress(), userID), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{userID}")
     public void deleteUser(@PathVariable String userID) {
-
+        userService.deleteUser(userID);
     }
 
 }
