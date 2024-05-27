@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Getter
 @Setter
 @AllArgsConstructor
+@RequiredArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "users")

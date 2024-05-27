@@ -2,8 +2,10 @@ package com.mdp.next.service;
 
 import java.util.List;
 import java.util.Optional;
+
+import com.mdp.next.entity.Account;
 import com.mdp.next.entity.User;
-import com.mdp.next.repository.UserRepository;
+import com.mdp.next.repository.*;
 import com.mdp.next.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +14,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
-    UserRepository userRepository;    
+    UserRepository userRepository;   
+    AccountRepository accountRepository; 
 
     public User getUser(String userID) {
         return unwrapUser(userRepository.findById(userID), userID);
@@ -22,7 +25,10 @@ public class UserServiceImpl implements UserService {
         return (List<User>) userRepository.findAll();
     }
 
-    public User createUser(User user) {
+    public User createUser(User user) { 
+        Account account = new Account(user, 0.00, user.getID());
+        accountRepository.save(account);
+        user.setAccount(account);
         return userRepository.save(user);
     }
 
