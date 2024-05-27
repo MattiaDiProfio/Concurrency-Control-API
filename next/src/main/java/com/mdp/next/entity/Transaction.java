@@ -13,9 +13,9 @@ import jakarta.persistence.*;
 public class Transaction {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private String ID;
+    private Long ID;
 
     @NonNull
     @Column(name = "amount", nullable = false)

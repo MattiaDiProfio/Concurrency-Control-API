@@ -15,9 +15,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Account {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private String ID;
+    private Long ID;
 
     @NonNull
     @JsonIgnore
@@ -39,6 +39,6 @@ public class Account {
     // field for debug purpose only
     @NonNull
     @Column(name = "user_id", nullable = false, unique = true)
-    private String userID;
+    private Long userID;
 
 }

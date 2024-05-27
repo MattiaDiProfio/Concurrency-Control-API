@@ -17,7 +17,7 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;   
     AccountRepository accountRepository; 
 
-    public User getUser(String userID) {
+    public User getUser(Long userID) {
         return unwrapUser(userRepository.findById(userID), userID);
     }
 
@@ -32,18 +32,18 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    public User updateUser(String newEmail, String newAddress, String userID) {
+    public User updateUser(String newEmail, String newAddress, Long userID) {
         User user = unwrapUser(userRepository.findById(userID), userID);
         user.setEmail(newEmail);
         user.setAddress(newAddress);
         return userRepository.save(user);
     }
 
-    public void deleteUser(String userID) {
+    public void deleteUser(Long userID) {
         userRepository.deleteById(userID);
     }
 
-    static User unwrapUser(Optional<User> entity, String userID) {
+    static User unwrapUser(Optional<User> entity, Long userID) {
         if (entity.isPresent()) return entity.get();
         else throw new EntityNotFoundException(userID, "user");
     }
