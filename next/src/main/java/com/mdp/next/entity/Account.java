@@ -19,7 +19,6 @@ public class Account {
     @Column(name = "id")
     private Long ID;
 
-    @NonNull
     @JsonIgnore
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     private User user;
@@ -37,7 +36,6 @@ public class Account {
     private List<Transaction> received;
 
     // field for debug purpose only
-    @NonNull
     @Column(name = "user_id", nullable = false, unique = true)
     private Long userID;
 

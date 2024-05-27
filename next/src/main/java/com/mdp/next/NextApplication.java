@@ -1,6 +1,5 @@
 package com.mdp.next;
 
-import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -27,21 +26,13 @@ public class NextApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		// create two users with their respective accounts for debugging purposes
-		userRepository.save(new User("John Doe", "johndoe@yahoo.com", "12 Common Street EH8 3DD"));
-		userRepository.save(new User("Mary Jane", "maryjane@gmail.com", "4 Random Avenue JK3 5HL"));
-
-		User john = userService.getUser(1L);
-		User mary = userService.getUser(2L);
-
-		Account johnAccount = new Account(john, 0.00, 1L);
-		Account maryAccount = new Account(mary, 0.00, 2L);
-
-		john.setAccount(johnAccount);
-		mary.setAccount(maryAccount);
+		User john = new User("john", "john@email.com", "123 address");
+		User amy = new User("amy", "amy@email.com", "123 address");
+		User tom = new User("tom", "tom@email.com", "123 address");
 
 		userRepository.save(john);
-		userRepository.save(mary);
+		userRepository.save(amy);
+		userRepository.save(tom);
 	}
 
 }

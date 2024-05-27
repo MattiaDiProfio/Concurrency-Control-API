@@ -26,9 +26,6 @@ public class UserServiceImpl implements UserService {
     }
 
     public User createUser(User user) { 
-        Account account = new Account(user, 0.00, user.getID());
-        accountRepository.save(account);
-        user.setAccount(account);
         return userRepository.save(user);
     }
 
