@@ -45,7 +45,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        ErrorResponse error = new ErrorResponse(Arrays.asList("Please ensure that required fields in the request payload are null."));  
+        ErrorResponse error = new ErrorResponse(Arrays.asList("Please ensure that required fields in the request payload are not null.", ex.getLocalizedMessage()));  
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 	}
 
