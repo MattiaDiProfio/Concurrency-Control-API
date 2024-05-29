@@ -20,6 +20,9 @@ public class NextApplication implements CommandLineRunner {
 	@Autowired
 	UserService userService;
 
+	@Autowired
+	AccountService accountService;
+
 	public static void main(String[] args) {
 		SpringApplication.run(NextApplication.class, args);
 	}
@@ -33,6 +36,7 @@ public class NextApplication implements CommandLineRunner {
 		userRepository.save(john);
 		userRepository.save(amy);
 		userRepository.save(tom);
+
 	}
 
 }

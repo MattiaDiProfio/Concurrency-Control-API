@@ -15,7 +15,7 @@ import org.springframework.http.MediaType;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class NextApplicationTests {
+class UserLayerIntegrationTests {
 
 	@Autowired
 	private MockMvc mockMvc; // needed to mock request-response cycle
