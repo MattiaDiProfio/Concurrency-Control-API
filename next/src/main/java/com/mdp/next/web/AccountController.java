@@ -16,17 +16,17 @@ public class AccountController {
 
     @GetMapping("/account/all")
     public ResponseEntity<List<Account>> getAccounts() {
-        return null;
+        return new ResponseEntity<>(accountService.getAccounts(), HttpStatus.OK);
     }
 
     @GetMapping("/user/{userID}/account")
     public ResponseEntity<Account> getAccount(@PathVariable Long userID) {
-        return null;
+        return new ResponseEntity<>(accountService.getAccount(userID), HttpStatus.OK);
     }
 
     @PostMapping("/user/{userID}/account")
     public ResponseEntity<Account> openAccount(@Valid @RequestBody Account account, @PathVariable Long userID) {
-        return null;
+        return new ResponseEntity<>(accountService.openAccount(account, userID), HttpStatus.CREATED);
     }
 
     @PutMapping("/user/{userID}/account")

@@ -36,7 +36,7 @@ public class Account {
     private List<Transaction> received;
 
     // field for debug purpose only
-    @Column(name = "user_id", nullable = false, unique = true)
+    @Column(name = "user_id", unique = true)
     private Long userID;
 
 }
