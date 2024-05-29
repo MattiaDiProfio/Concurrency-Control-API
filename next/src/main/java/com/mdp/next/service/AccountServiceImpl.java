@@ -41,7 +41,15 @@ public class AccountServiceImpl implements AccountService {
 
             // NOTE for the future - altough it might seem intuitive to call userRepository.save(user) after updating the user information
             // doing so will actually create another account with userID of null, this probably occurs due to the fact that calling the setter
-            // user.setAccount updates the user entity automatically.            
+            // user.setAccount updates the user entity automatically.     
+
+            /*
+                StackOverflow post link - https://stackoverflow.com/questions/30388751/hibernate-updating-the-record-upon-calling-the-setter-methods-of-the-bean-class?rq=3
+                "Persistent - Here the object is attached to the Hibernate session. So now the Hibernate session manages this object. 
+                Any changes made to this object gets reflected in the database. Because Hibernate designed it in such way that, 
+                if any modifications is made to a Persistent object, it automatically gets updated in the database,
+                when the session is flushed. (This is Hibernate's capability)."
+             */
 
             return accountRepository.save(account);
         }
@@ -54,7 +62,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void closeAccount(Long userID) {
-
+        User user = UserServiceImpl.unwrapUser(userRepository.findById(userID), userID);
+        Account account = unwrapAccount(Optional.ofNullable(user.getAccount()), userID);
+        user.setAccount(null);
+        accountRepository.delete(account);
     }
 
     public static Account unwrapAccount(Optional<Account> entity, Long userID) {

@@ -30,13 +30,14 @@ public class AccountController {
     }
 
     @PutMapping("/user/{userID}/account")
-    public ResponseEntity<Account> updateAccount(@Valid @RequestBody Account account, @PathVariable Long userID) { // THINK OF WHAT PARAMETERS TO BE PASSED INTO THIS METHOD
-        return null;
+    public ResponseEntity<Account> updateAccount(@Valid @RequestBody Account account, @PathVariable Long userID) { 
+        return new ResponseEntity<>(accountService.updateAccount(account, userID), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/user/{userID}/account") 
     public ResponseEntity<HttpStatus> closeAccount(@PathVariable Long userID) {
-        return null;
+        accountService.closeAccount(userID);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

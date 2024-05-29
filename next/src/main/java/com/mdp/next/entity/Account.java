@@ -20,7 +20,7 @@ public class Account {
     private Long ID;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "account")
     private User user;
 
     @NonNull
