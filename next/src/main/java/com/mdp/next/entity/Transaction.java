@@ -22,10 +22,12 @@ public class Transaction {
     private Double amount;
 
     @ManyToOne
+    @NonNull
     @JoinColumn(name = "sender_id", referencedColumnName = "ID")
     private Account sender;
 
     @ManyToOne
+    @NonNull
     @JoinColumn(name = "receiver_id", referencedColumnName = "ID")
     private Account receiver;
 
