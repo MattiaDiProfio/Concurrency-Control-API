@@ -56,11 +56,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account updateAccount(Account account, Long userID) {
-        return null;
-    }
-
-    @Override
     public void closeAccount(Long userID) {
         User user = UserServiceImpl.unwrapUser(userRepository.findById(userID), userID);
         Account account = unwrapAccount(Optional.ofNullable(user.getAccount()), userID);

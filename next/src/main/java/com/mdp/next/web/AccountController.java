@@ -29,11 +29,6 @@ public class AccountController {
         return new ResponseEntity<>(accountService.openAccount(account, userID), HttpStatus.CREATED);
     }
 
-    @PutMapping("/user/{userID}/account")
-    public ResponseEntity<Account> updateAccount(@Valid @RequestBody Account account, @PathVariable Long userID) { 
-        return new ResponseEntity<>(accountService.updateAccount(account, userID), HttpStatus.CREATED);
-    }
-
     @DeleteMapping("/user/{userID}/account") 
     public ResponseEntity<HttpStatus> closeAccount(@PathVariable Long userID) {
         accountService.closeAccount(userID);
