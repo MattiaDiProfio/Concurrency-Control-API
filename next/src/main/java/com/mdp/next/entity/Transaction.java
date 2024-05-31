@@ -1,6 +1,8 @@
 package com.mdp.next.entity;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import lombok.*;
 import jakarta.persistence.*;
 
@@ -22,21 +24,22 @@ public class Transaction {
     private Double amount;
 
     @ManyToOne
-    @NonNull
     @JoinColumn(name = "sender_id", referencedColumnName = "ID")
     private Account sender;
 
     @ManyToOne
-    @NonNull
     @JoinColumn(name = "receiver_id", referencedColumnName = "ID")
     private Account receiver;
 
+    private Long receiverID;
+    private Long senderID;
+
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt; 
+    private String createdAt; 
 
     @PrePersist // populate the field with the current time whenever a transaction is instantiated
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+        createdAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
 }

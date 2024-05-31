@@ -39,4 +39,21 @@ public class Account {
     @Column(name = "user_id", unique = true)
     private Long userID;
 
+
+    public void addSentTransaction(Transaction transaction) {
+        sent.add(transaction);
+    }
+
+    public void addReceivedTransaction(Transaction transaction) {
+        received.add(transaction);
+    }
+
+    public void removeSentTransaction(Long transactionID) {
+        
+    }
+
+    public void removeReceivedTransaction(Long transactionID) {
+
+    }
+
 }

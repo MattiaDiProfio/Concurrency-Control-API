@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 public class TransactionServiceImpl implements TransactionService {
 
     AccountRepository accountRepository;
+
+    AccountServiceImpl accountService;
     TransactionRepository transactionRepository;    
 
     @Override
@@ -39,25 +41,30 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override   
     public Transaction placeTransaction(Transaction transaction) {
-        Double amount = transaction.getAmount();
-        Long senderID = transaction.getSender().getID();
-        Long receiverID = transaction.getReceiver().getID();
 
-        Account sender = AccountServiceImpl.unwrapAccount(accountRepository.findById(senderID), senderID);
-        Account receiver = AccountServiceImpl.unwrapAccount(accountRepository.findById(receiverID), receiverID);
+        Double amount = transaction.getAmount();
+        Long senderID = transaction.getSenderID();
+        Long receiverID = transaction.getReceiverID();
+
+        // fetch the accounts based on the transaction's receiverID and senderID
+        Account sender = accountService.getAccount(senderID);
+        Account receiver = accountService.getAccount(receiverID);
+
+        // execute the transfer of currency
         sender.setBalance(sender.getBalance() - amount);
         receiver.setBalance(receiver.getBalance() + amount);
 
-        // append the transaction to the relative lists
-        List<Transaction> senderSent = sender.getSent();
-        senderSent.add(transaction);
-        sender.setSent(senderSent);
+        // update both the accounts' sent and received lists 
+        sender.addSentTransaction(transaction);
+        receiver.addReceivedTransaction(transaction);
 
-        List<Transaction> receiverReceived = receiver.getReceived();
-        receiverReceived.add(transaction);
-        receiver.setReceived(receiverReceived);
+        // connect the accounts to the transaction 
+        transaction.setSender(sender);
+        transaction.setReceiver(receiver);
 
+        // save the transaction to repository
         return transactionRepository.save(transaction);
+
     }
 
     @Override   
