@@ -71,18 +71,6 @@ public class TransactionServiceTest {
         verify(transactionRepository, times(1)).save(transaction);
     }
 
-    @Test
-    public void testDeleteTransaction() {
-        when(accountService.getAccount(1L)).thenReturn(new Account(100.00));
-        when(accountService.getAccount(2L)).thenReturn(new Account(25.00));
-        Transaction transaction = new Transaction(10.00, 1L, 2L);
-        transaction.setID(1L);
-        transaction.setSender(accountService.getAccount(1L));
-        transaction.setReceiver(accountService.getAccount(2L));
-        transactionService.deleteTransaction(1L);
-        verify(transactionRepository, times(1)).deleteById(1L);
-    }
-
     @Test 
     public void testAbortTransaction() {
         when(accountService.getAccount(1L)).thenReturn(new Account(100.00));

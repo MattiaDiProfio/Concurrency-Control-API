@@ -71,26 +71,21 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override   
-    public void deleteTransaction(Long transactionID) {
-        // once a transaction is deleted it disappears from all account logs, but its effect persist 
-        // this can be an issue - if the need for this endpoint is not clear, then it should be removed!
-        transactionRepository.deleteById(transactionID);
-    }
-
-    @Override   
     public void abortTransaction(Long transactionID) {
         Transaction transaction = unwrapTransaction(transactionRepository.findById(transactionID), transactionID);
 
         Double amount = transaction.getAmount();       
         Account sender = transaction.getSender();
         Account receiver = transaction.getReceiver();
+        Long receiverID = transaction.getReceiverID();
 
-        // check if the receiver has enough assets to cover the transaction abort 
-        if (receiver.getBalance() < amount) throw new InsufficientAssetsException(receiver.getID());
+        // check if the receiver account has enough assets to cover the transaction abort 
+        Account uptodateReceiver = accountService.getAccount(receiverID);
+        if (uptodateReceiver.getBalance() < amount) throw new InsufficientAssetsException(receiverID);
 
         // check that both accounts are still active
         if (sender == null || receiver == null) {
-            throw new AccountNotActiveException(transactionID, transaction.getSenderID(), transaction.getReceiverID());
+            throw new AccountNotActiveException(transactionID, transaction.getSenderID(), receiverID);
         } 
 
         sender.setBalance(sender.getBalance() + amount);

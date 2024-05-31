@@ -8,7 +8,6 @@ public interface TransactionService {
     List<Transaction> getAccountSentTransactions(Long userID);
     List<Transaction> getAccountReceivedTransactions(Long userID);
     Transaction placeTransaction(Transaction transaction);
-    void deleteTransaction(Long transactionID);
     void abortTransaction(Long transactionID);
     Transaction getTransactionById(Long transactionID);
 }

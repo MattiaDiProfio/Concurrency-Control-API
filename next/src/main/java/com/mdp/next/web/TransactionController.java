@@ -34,12 +34,6 @@ public class TransactionController {
         return new ResponseEntity<>(transactionService.placeTransaction(transaction), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/transaction/{transactionID}")
-    public ResponseEntity<HttpStatus> deleteTransaction(@PathVariable Long transactionID) {
-        transactionService.deleteTransaction(transactionID);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
     @DeleteMapping("/transaction/{transactionID}/abort")
     public ResponseEntity<HttpStatus> abortTransaction(@PathVariable Long transactionID) {
         transactionService.abortTransaction(transactionID);
