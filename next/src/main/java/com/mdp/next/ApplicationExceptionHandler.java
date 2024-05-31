@@ -29,6 +29,13 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
+    // thrown when a get request tries to find a non-existing object
+    @ExceptionHandler({InsufficientAssetsException.class, AccountsMustDifferException.class})
+    public ResponseEntity<Object> handleTransactionExceptions(RuntimeException ex) {
+        ErrorResponse error = new ErrorResponse(Arrays.asList(ex.getMessage()));  
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
     // triggered by unsuccessfull user deletion operation
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<Object> handleDataAccessException(EmptyResultDataAccessException ex) {

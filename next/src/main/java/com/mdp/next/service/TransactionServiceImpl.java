@@ -46,9 +46,15 @@ public class TransactionServiceImpl implements TransactionService {
         Long senderID = transaction.getSenderID();
         Long receiverID = transaction.getReceiverID();
 
+        // ensure that the sender and receiverID are valid (i.e. not equal)
+        if (senderID.equals(receiverID)) throw new AccountsMustDifferException();
+
         // fetch the accounts based on the transaction's receiverID and senderID
         Account sender = accountService.getAccount(senderID);
         Account receiver = accountService.getAccount(receiverID);
+
+        // ensure that the sender has enough assets to cover the transaction amount
+        if (sender.getBalance() < amount) throw new InsufficientAssetsException(senderID);
 
         // execute the transfer of currency
         sender.setBalance(sender.getBalance() - amount);
