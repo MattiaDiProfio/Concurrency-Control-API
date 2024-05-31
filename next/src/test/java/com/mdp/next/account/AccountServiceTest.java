@@ -1,4 +1,4 @@
-package com.mdp.next;
+package com.mdp.next.account;
 
 import com.mdp.next.entity.*;
 import com.mdp.next.repository.*;
@@ -41,7 +41,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void getAccountByUserID() {
+    public void testGetAccountByUserID() {
         Optional<User> user = Optional.of(new User(1L, null, "Mattia", "mattia@gmail.com", "123 Random Road"));
         User unwrappedUser = UserServiceImpl.unwrapUser(user, 1L);
         Account account = new Account(10.00);
@@ -56,7 +56,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void openAccount() {
+    public void testOpenAccount() {
         Optional<User> user = Optional.of(new User(1L, null, "Mattia", "mattia@gmail.com", "123 Random Road"));
         User unwrappedUser = UserServiceImpl.unwrapUser(user, 1L);
         when(userRepository.findById(1L)).thenReturn(user);
@@ -68,7 +68,7 @@ public class AccountServiceTest {
     }
 
     @Test 
-    public void closeAccount() {
+    public void testCloseAccount() {
         Optional<User> user = Optional.of(new User(1L, null, "Mattia", "mattia@gmail.com", "123 Random Road"));
         User unwrappedUser = UserServiceImpl.unwrapUser(user, 1L);
         when(userRepository.findById(1L)).thenReturn(user);

@@ -1,4 +1,4 @@
-package com.mdp.next;
+package com.mdp.next.user;
 
 import com.mdp.next.entity.User;
 import com.mdp.next.repository.UserRepository;

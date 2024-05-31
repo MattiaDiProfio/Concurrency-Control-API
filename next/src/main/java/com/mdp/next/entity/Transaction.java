@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 @Getter
 @Setter
 @AllArgsConstructor
+@RequiredArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "transactions")
@@ -31,7 +32,10 @@ public class Transaction {
     @JoinColumn(name = "receiver_id", referencedColumnName = "ID")
     private Account receiver;
 
+    @NonNull
     private Long receiverID;
+
+    @NonNull
     private Long senderID;
 
     @Column(name = "created_at", nullable = false)

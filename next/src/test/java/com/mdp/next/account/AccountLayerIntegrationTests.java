@@ -1,4 +1,4 @@
-package com.mdp.next;
+package com.mdp.next.account;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,50 +17,50 @@ import org.springframework.http.MediaType;
 @AutoConfigureMockMvc
 public class AccountLayerIntegrationTests {
     
-	@Autowired
-	private MockMvc mockMvc; // needed to mock request-response cycle
+  @Autowired
+  private MockMvc mockMvc; // needed to mock request-response cycle
 
-    @Autowired      
-    AccountServiceImpl accountService;
+  @Autowired      
+  AccountServiceImpl accountService;
 
-	@Test
-	void contextLoads() {
-		// sanity check to ensure the mockMvc bean was actually injected into the spring container
-		assertNotNull(mockMvc);
-	}
+  @Test
+  void contextLoads() {
+    // sanity check to ensure the mockMvc bean was actually injected into the spring container
+    assertNotNull(mockMvc);
+  }
 
     @Test
     public void testGetAccountSuccessfull() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/user/1/account").contentType(MediaType.APPLICATION_JSON).content("{ \"balance\" : \"15.50\" }"));
-		RequestBuilder request = MockMvcRequestBuilders.get("/user/1/account");
-		mockMvc.perform(request).
-			andExpect(status().is2xxSuccessful()).
+    RequestBuilder request = MockMvcRequestBuilders.get("/user/1/account");
+    mockMvc.perform(request).
+      andExpect(status().is2xxSuccessful()).
             andExpect(jsonPath("$.balance").value(is(15.50)));
     }
 
     @Test       
     public void testGetAllAccounts() throws Exception {
-		RequestBuilder request = MockMvcRequestBuilders.get("/account/all");
-		mockMvc.perform(request).andExpect(status().is2xxSuccessful()).
+    RequestBuilder request = MockMvcRequestBuilders.get("/account/all");
+    mockMvc.perform(request).andExpect(status().is2xxSuccessful()).
             andExpect(jsonPath("$").isArray());
     }
 
     @Test 
     public void testGetAccountUnsuccessfull() throws Exception {
-		RequestBuilder request = MockMvcRequestBuilders.get("/user/3/account");
-		mockMvc.perform(request).andExpect(status().is4xxClientError());
+    RequestBuilder request = MockMvcRequestBuilders.get("/user/3/account");
+    mockMvc.perform(request).andExpect(status().is4xxClientError());
     }
 
     @Test
     public void testOpenAccountSuccessfull() throws Exception {
-		String jsonRequestBody = """
-		{ "balance" : "100.00" }
-		""";
-		RequestBuilder request = MockMvcRequestBuilders.post("/user/2/account")
+    String jsonRequestBody = """
+    { "balance" : "100.00" }
+    """;
+    RequestBuilder request = MockMvcRequestBuilders.post("/user/2/account")
             .contentType(MediaType.APPLICATION_JSON)
             .content(jsonRequestBody);
-		mockMvc.perform(request).andExpect(status().is2xxSuccessful()).	
-		    andExpect(status().isCreated()).
+    mockMvc.perform(request).andExpect(status().is2xxSuccessful()).	
+        andExpect(status().isCreated()).
             andExpect(jsonPath("$.balance").exists()).
             andExpect(jsonPath("$.balance").value(is(100.00))).
             andExpect(jsonPath("$.userID").value(is(2)));
@@ -70,7 +70,7 @@ public class AccountLayerIntegrationTests {
     public void testOpenAccountUnsuccessfullDueToUniquenessBreach() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/user/1/account").contentType(MediaType.APPLICATION_JSON).content("{ \"balance\" : \"15.50\" }"));
 
-		mockMvc.
+    mockMvc.
             perform(
                 MockMvcRequestBuilders.post("/user/1/account").
                 contentType(MediaType.APPLICATION_JSON).
@@ -80,26 +80,26 @@ public class AccountLayerIntegrationTests {
 
     @Test 
     public void testOpenAccountUnsuccessfullDueToInvalidPayload() throws Exception {
-		String jsonRequestBody = """
-		{ "balance" : null }
-		""";
-		RequestBuilder request = MockMvcRequestBuilders.post("/user/2/account")
+    String jsonRequestBody = """
+    { "balance" : null }
+    """;
+    RequestBuilder request = MockMvcRequestBuilders.post("/user/2/account")
             .contentType(MediaType.APPLICATION_JSON)
             .content(jsonRequestBody);
-		mockMvc.perform(request).andExpect(status().is4xxClientError());		
+    mockMvc.perform(request).andExpect(status().is4xxClientError());		
     }
 
     @Test
     public void testCloseAccountSuccessfull() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/user/1/account").contentType(MediaType.APPLICATION_JSON).content("{ \"balance\" : \"15.50\" }"));
-		RequestBuilder request = MockMvcRequestBuilders.delete("/user/1/account");
-		mockMvc.perform(request).andExpect(status().isNoContent());
+    RequestBuilder request = MockMvcRequestBuilders.delete("/user/1/account");
+    mockMvc.perform(request).andExpect(status().isNoContent());
     }
 
     @Test 
     public void testCloseAccountUnsuccessfull() throws Exception {
-		RequestBuilder request = MockMvcRequestBuilders.delete("/user/3/account");
-		mockMvc.perform(request).andExpect(status().is4xxClientError());
+    RequestBuilder request = MockMvcRequestBuilders.delete("/user/3/account");
+    mockMvc.perform(request).andExpect(status().is4xxClientError());
     }
 
 }

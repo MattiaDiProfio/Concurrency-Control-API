@@ -10,4 +10,5 @@ public interface TransactionService {
     Transaction placeTransaction(Transaction transaction);
     void deleteTransaction(Long transactionID);
     void abortTransaction(Long transactionID);
+    Transaction getTransactionById(Long transactionID);
 }

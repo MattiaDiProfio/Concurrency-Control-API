@@ -1,6 +1,7 @@
 package com.mdp.next.entity;
 
 import java.util.List;
+import java.util.ArrayList;
 import lombok.*;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -29,11 +30,11 @@ public class Account {
 
     @JsonIgnore
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
-    private List<Transaction> sent;
+    private List<Transaction> sent = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
-    private List<Transaction> received;
+    private List<Transaction> received = new ArrayList<>();
 
     // field for debug purpose only
     @Column(name = "user_id", unique = true)
@@ -46,14 +47,6 @@ public class Account {
 
     public void addReceivedTransaction(Transaction transaction) {
         received.add(transaction);
-    }
-
-    public void removeSentTransaction(Long transactionID) {
-        
-    }
-
-    public void removeReceivedTransaction(Long transactionID) {
-
     }
 
 }

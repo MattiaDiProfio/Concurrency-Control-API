@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
-    AccountRepository accountRepository;
-
     AccountServiceImpl accountService;
     TransactionRepository transactionRepository;    
 
@@ -24,13 +22,13 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override   
     public List<Transaction> getAccountSentTransactions(Long userID) {
-        Account account = AccountServiceImpl.unwrapAccount(accountRepository.findByUserID(userID), userID);
+        Account account = accountService.getAccount(userID);
         return account.getSent();
     } 
 
     @Override 
     public List<Transaction> getAccountReceivedTransactions(Long userID) {
-        Account account = AccountServiceImpl.unwrapAccount(accountRepository.findByUserID(userID), userID);
+        Account account = accountService.getAccount(userID);
         return account.getReceived();
     }
 
@@ -38,6 +36,10 @@ public class TransactionServiceImpl implements TransactionService {
     public Transaction placeTransaction(Transaction transaction) {
 
         Double amount = transaction.getAmount();
+
+        // check that the amount is positive and non-zero
+        if (amount <= 0.00) throw new NonPositiveAmountException(transaction.getID());
+
         Long senderID = transaction.getSenderID();
         Long receiverID = transaction.getReceiverID();
 
@@ -97,7 +99,6 @@ public class TransactionServiceImpl implements TransactionService {
         // revert the transaction amount 
         // delete the transaction from the account logs and the transaction repository
         transactionRepository.deleteById(transactionID);
-        
     }
  
     public static Transaction unwrapTransaction(Optional<Transaction> entity, Long transactionID) {
@@ -105,4 +106,7 @@ public class TransactionServiceImpl implements TransactionService {
         else throw new TransactionNotFoundException(transactionID);
     }
 
+    public Transaction getTransactionById(Long transactionID) {
+        return unwrapTransaction(transactionRepository.findById(transactionID), transactionID);
+    }
 }
