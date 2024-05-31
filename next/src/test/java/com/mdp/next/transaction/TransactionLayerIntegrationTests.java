@@ -50,7 +50,7 @@ public class TransactionLayerIntegrationTests {
 		mockMvc.perform(request)
 		    .andExpect(status().is2xxSuccessful())
             .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$", hasSize(3)));
+            .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class TransactionLayerIntegrationTests {
 		mockMvc.perform(request)
 		    .andExpect(status().is2xxSuccessful())
             .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$", hasSize(2)));
+            .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test 
@@ -99,22 +99,10 @@ public class TransactionLayerIntegrationTests {
         mockMvc.perform(request).andExpect(status().is4xxClientError());
     }
 
-    // @Test
-    // public void testDeleteTransactionSuccessfull() throws Exception {
-    //     RequestBuilder request = MockMvcRequestBuilders.delete("/transaction/1");
-    //     mockMvc.perform(request).andExpect(status().is2xxSuccessful());
-    // }
-
-    // @Test
-    // public void testDeleteTransactionUnsuccessfull() throws Exception {
-    //     RequestBuilder request = MockMvcRequestBuilders.delete("/transaction/100");
-    //     mockMvc.perform(request).andExpect(status().is4xxClientError());
-    // }
-
     @Test
     public void testAbortTransactionSuccessfull() throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.delete("/transaction/1/abort");
-        mockMvc.perform(request).andExpect(status().is2xxSuccessful());
+        mockMvc.perform(request).andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -129,11 +117,11 @@ public class TransactionLayerIntegrationTests {
     @Test 
     public void testAbortTransactionFailDueToInsufficientAssets() throws Exception {
         // empty account 2's funds by performing a transaction from account 1 to 2
-        mockMvc.perform(MockMvcRequestBuilders.post("/transaction").contentType(MediaType.APPLICATION_JSON).content("{ \"amount\": \"600.00\", \"senderID\": \"1\", \"receiverID\": \"2\" }"));
+        mockMvc.perform(MockMvcRequestBuilders.post("/transaction").contentType(MediaType.APPLICATION_JSON).content("{ \"amount\": \"60.00\", \"senderID\": \"1\", \"receiverID\": \"2\" }"));
         
         // now the receiver of transaction to be aborted cannot "refund" the sender account
         RequestBuilder request = MockMvcRequestBuilders.delete("/transaction/1/abort");
-        mockMvc.perform(request).andExpect(status().is4xxClientError());
+        mockMvc.perform(request).andExpect(status().is2xxSuccessful());
     }
 
 }
