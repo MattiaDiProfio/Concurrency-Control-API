@@ -31,8 +31,12 @@ public class Transaction {
     @JoinColumn(name = "receiver_id", referencedColumnName = "ID")
     private Account receiver;
 
-    @NonNull
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; 
+
+    @PrePersist // populate the field with the current time whenever a transaction is instantiated
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
 }
