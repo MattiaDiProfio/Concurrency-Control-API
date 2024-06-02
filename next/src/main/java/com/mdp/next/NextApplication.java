@@ -1,27 +1,30 @@
 package com.mdp.next;
 
-import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import com.mdp.next.repository.*;
-import com.mdp.next.service.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+// import com.mdp.next.repository.*;
+// import com.mdp.next.service.*;
 // import com.mdp.next.entity.*;
 
 @SpringBootApplication
 public class NextApplication implements CommandLineRunner {
 
-	@Autowired
-	UserRepository userRepository;
+	// @Autowired
+	// UserRepository userRepository;
 
-	@Autowired
-	AccountRepository accountRepository;
+	// @Autowired
+	// AccountRepository accountRepository;
 
-	@Autowired
-	UserService userService;
+	// @Autowired
+	// UserService userService;
 
-	@Autowired
-	AccountService accountService;
+	// @Autowired
+	// AccountService accountService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(NextApplication.class, args);
@@ -38,5 +41,10 @@ public class NextApplication implements CommandLineRunner {
 		// userRepository.save(tom);
 
 	}
+
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}	
 
 }

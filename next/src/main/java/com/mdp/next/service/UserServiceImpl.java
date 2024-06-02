@@ -7,6 +7,8 @@ import com.mdp.next.entity.User;
 import com.mdp.next.repository.*;
 import com.mdp.next.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
@@ -15,6 +17,7 @@ public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;   
     AccountRepository accountRepository; 
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public User getUser(Long userID) {
@@ -28,7 +31,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) { 
+        // save the user's password as its one-way hashed equivalent
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
+    }
+
+    @Override
+    public User getUser(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        return unwrapUser(user, 404L);
     }
 
     @Override

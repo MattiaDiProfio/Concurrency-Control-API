@@ -30,7 +30,7 @@ public class UserController {
         return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<Object> createUser(@Valid @RequestBody User user, BindingResult result) {
         if (result.hasErrors()) {
             List<String> errors = new ArrayList<>();
@@ -38,7 +38,8 @@ public class UserController {
             ErrorResponse error = new ErrorResponse(errors);  
             return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
+        userService.createUser(user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/{userID}")
