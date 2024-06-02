@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Security Constants ### 
+src/main/java/com/mdp/next/security/SecurityConstants.java

@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.mdp.next.repository.*;
 import com.mdp.next.service.*;
-import com.mdp.next.entity.*;
+// import com.mdp.next.entity.*;
 
 @SpringBootApplication
 public class NextApplication implements CommandLineRunner {
@@ -29,13 +29,13 @@ public class NextApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		User john = new User("john", "john@email.com", "123 address");
-		User amy = new User("amy", "amy@email.com", "123 address");
-		User tom = new User("tom", "tom@email.com", "123 address");
+		// User john = new User("john", "john@email.com", "123 address");
+		// User amy = new User("amy", "amy@email.com", "123 address");
+		// User tom = new User("tom", "tom@email.com", "123 address");
 
-		userRepository.save(john);
-		userRepository.save(amy);
-		userRepository.save(tom);
+		// userRepository.save(john);
+		// userRepository.save(amy);
+		// userRepository.save(tom);
 
 	}
 

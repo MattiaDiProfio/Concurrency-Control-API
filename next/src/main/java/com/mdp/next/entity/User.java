@@ -39,4 +39,16 @@ public class User {
     @Column(name = "address", nullable = false)
     private String address;
 
+    // AUTH
+
+	@NotBlank(message =  "username cannot be blank")
+	@NonNull
+	@Column(nullable = false, unique = true)
+	private String username;
+
+	@NotBlank(message =  "password cannot be blank")
+    @NonNull
+	@Column(nullable = false)
+	private String password;
+
 }
