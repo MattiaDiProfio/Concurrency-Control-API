@@ -6,6 +6,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import com.mdp.next.security.filter.AuthenticationFilter;
+import com.mdp.next.security.filter.JWTAuthorizationFilter;
 import com.mdp.next.security.manager.CustomAuthenticationManager;
 import com.mdp.next.security.filter.ExceptionHandlerFilter;
 import lombok.AllArgsConstructor;
@@ -35,6 +36,7 @@ public class SecurityConfig {
                     .anyRequest().authenticated())
                     .addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class) // runs before all other filters, setting up a global exception handler for exception uncatchable by the dispatcher servlet
                     .addFilter(authenticationFilter)
+                    .addFilterAfter(new JWTAuthorizationFilter(), AuthenticationFilter.class)
             .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
