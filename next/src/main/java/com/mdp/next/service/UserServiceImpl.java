@@ -1,13 +1,13 @@
 package com.mdp.next.service;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
-
+import com.mdp.next.entity.UserDTO;
 import com.mdp.next.entity.User;
 import com.mdp.next.repository.*;
 import com.mdp.next.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +20,17 @@ public class UserServiceImpl implements UserService {
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public User getUser(Long userID) {
-        return unwrapUser(userRepository.findById(userID), userID);
+    public UserDTO getUser(Long userID) {
+        User user = unwrapUser(userRepository.findById(userID), userID);
+        return new UserDTO(user);
     }
 
     @Override
-    public List<User> getUsers() {
-        return (List<User>) userRepository.findAll();
+    public List<UserDTO> getUsers() {
+        List<User> users = (List<User>) userRepository.findAll();
+        List<UserDTO> dtoUsers = new ArrayList<>();     
+        for (User user : users) dtoUsers.add(new UserDTO(user));
+        return dtoUsers;
     }
 
     @Override

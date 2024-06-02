@@ -1,13 +1,14 @@
 package com.mdp.next.service;
 
 import com.mdp.next.entity.User;
+import com.mdp.next.entity.UserDTO;
 import java.util.List;
 
 public interface UserService {
 
-    User getUser(Long userID);
+    UserDTO getUser(Long userID);
     User getUser(String username);
-    List<User> getUsers();
+    List<UserDTO> getUsers();
     User createUser(User user);
     User updateUser(String newEmail, String newAddress, Long ID);
     void deleteUser(Long userID);

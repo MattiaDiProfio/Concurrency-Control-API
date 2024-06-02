@@ -21,12 +21,12 @@ public class UserController {
     UserService userService;
 
     @GetMapping("/{userID}")
-    public ResponseEntity<User> getUser(@PathVariable Long userID) {
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long userID) {
         return new ResponseEntity<>(userService.getUser(userID), HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<List<UserDTO>> getUsers() {
         return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 
@@ -51,8 +51,8 @@ public class UserController {
             ErrorResponse error = new ErrorResponse(errors);  
             return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
-
-        return new ResponseEntity<>(userService.updateUser(user.getEmail(), user.getAddress(), userID), HttpStatus.CREATED);
+        userService.updateUser(user.getEmail(), user.getAddress(), userID);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{userID}")
