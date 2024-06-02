@@ -20,6 +20,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             // maps the request payload field to a user object - username, password
             User user = new ObjectMapper().readValue(request.getInputStream(), User.class);
 
+            System.out.println("///////////////////////////////////////////////////");
+            System.out.println(user.getUsername());
+            System.out.println(user.getPassword());
+            System.out.println("///////////////////////////////////////////////////");
+
             // pass the credentials into the authentication manager
 
         } catch (IOException e) {
