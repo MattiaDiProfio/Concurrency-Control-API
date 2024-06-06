@@ -3,6 +3,7 @@ package com.mdp.next.entity;
 import lombok.*;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mdp.next.exception.Role;
 import jakarta.validation.constraints.*;
 
 @Getter
@@ -39,7 +40,8 @@ public class User {
     @Column(name = "address", nullable = false)
     private String address;
 
-    // AUTH
+
+
 
 	@NotBlank(message =  "username cannot be blank")
 	@NonNull
@@ -50,5 +52,11 @@ public class User {
     @NonNull
 	@Column(nullable = false)
 	private String password;
+
+    @NotBlank(message = "user role cannot be blank")
+    @NonNull
+    @Role
+    @Column(nullable = false)
+    private String role;
 
 }

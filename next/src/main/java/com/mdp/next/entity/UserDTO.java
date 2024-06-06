@@ -18,6 +18,7 @@ public class UserDTO {
     private String email;
     private String address;
 	private String username;
+    private String role;
 
     public UserDTO (User user) {
         setID(user.getID());
@@ -26,5 +27,6 @@ public class UserDTO {
         setEmail(user.getEmail());
         setAddress(user.getAddress());
         setUsername(user.getUsername());
+        setRole(user.getRole());
     }
 }
