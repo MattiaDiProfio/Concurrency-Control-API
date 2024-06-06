@@ -88,12 +88,10 @@ public class TransactionServiceImpl implements TransactionService {
             throw new AccountNotActiveException(transactionID, transaction.getSenderID(), receiverID);
         } 
 
+        // revert the transaction amount
         sender.setBalance(sender.getBalance() + amount);
         receiver.setBalance(receiver.getBalance() - amount);
 
-        // revert the transaction amount 
-        // delete the transaction from the account logs and the transaction repository
-        transactionRepository.deleteById(transactionID);
     }
  
     public static Transaction unwrapTransaction(Optional<Transaction> entity, Long transactionID) {

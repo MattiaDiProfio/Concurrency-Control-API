@@ -20,14 +20,14 @@ public class UserController {
 
     UserService userService;
 
-    @GetMapping("/{userID}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable Long userID) {
-        return new ResponseEntity<>(userService.getUser(userID), HttpStatus.OK);
-    }
-
     @GetMapping("/all")
     public ResponseEntity<List<UserDTO>> getUsers() {
         return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{userID}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long userID) {
+        return new ResponseEntity<>(userService.getUser(userID), HttpStatus.OK);
     }
 
     @PostMapping("/register")
