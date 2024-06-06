@@ -17,6 +17,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import lombok.AllArgsConstructor;
+import com.mdp.next.entity.AuthenticationResponse;
 
 @AllArgsConstructor
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -60,6 +61,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.TOKEN_EXPIRATION))
             .sign(Algorithm.HMAC512(SecurityConstants.SECRET_KEY));
         response.addHeader(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
+
+        // include the username and token in the response object 
+        ObjectMapper mapper = new ObjectMapper();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(mapper.writeValueAsString(new AuthenticationResponse(authResult.getName(), token)));
     }
 
 }
