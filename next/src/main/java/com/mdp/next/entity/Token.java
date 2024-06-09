@@ -19,6 +19,9 @@ public class Token {
     @Column(name = "is_active")
     private boolean isActive;
 
+    @Column(name = "body")
+    private String body;
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "ID")
     private User user;

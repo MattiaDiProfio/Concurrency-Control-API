@@ -19,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import lombok.AllArgsConstructor;
 import com.mdp.next.entity.*;
 import com.mdp.next.repository.*;
+import java.util.List;
 
 @AllArgsConstructor
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -37,6 +38,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             // pass the credentials into the authentication manager using an authentication object
             //                                                                  principal = username, credentials = password
             Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+
+
             return authenticationManager.authenticate(authentication);
 
         } catch (IOException e) {
@@ -59,6 +62,17 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     // method triggered when the attemptAuthentication method succedes
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        
+        // make any previous token associated with the request username inactive before dispatching new token
+        // TODO : use the method in the spring-auth-playground tokenrepo to fetch any active token by username, then make
+        // them all invalid 
+        User requestUser = userService.getUser(authResult.getName());
+        List<Token> previousTokens = tokenRepository.findAllTokenByUser(requestUser.getID());
+        for (Token t : previousTokens) {
+            t.setActive(false);
+            tokenRepository.save(t);
+        }
+
         String token = JWT.create()
             .withSubject(authResult.getName())
             .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.TOKEN_EXPIRATION))
@@ -66,9 +80,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         // save the token into a Token instance 
         // connect the token to the user 
-        User requestUser = userService.getUser(authResult.getName());
         Token tokenDTO = new Token();
         tokenDTO.setUser(requestUser);
+        tokenDTO.setBody(token);
         tokenDTO.setActive(true);
         tokenRepository.save(tokenDTO);
 

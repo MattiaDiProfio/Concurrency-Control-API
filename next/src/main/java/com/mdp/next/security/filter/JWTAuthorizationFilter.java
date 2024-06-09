@@ -13,8 +13,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.mdp.next.security.SecurityConstants;
+import com.mdp.next.repository.TokenRepository;
+import com.mdp.next.entity.Token;
+import com.mdp.next.exception.TokenExpiredException;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
+
+    private TokenRepository tokenRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -33,6 +40,8 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         String token = header.replace(SecurityConstants.BEARER, "");
 
         // TODO : check that the token is not expired 
+        Token fetchedToken = tokenRepository.findByBody(token).orElse(null);
+        if (!fetchedToken.isActive()) throw new TokenExpiredException();
 
         // validate jwt signature and check for a match
         String user = JWT.require(Algorithm.HMAC512(SecurityConstants.SECRET_KEY))

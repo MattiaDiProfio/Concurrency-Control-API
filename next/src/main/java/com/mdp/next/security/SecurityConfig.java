@@ -41,7 +41,7 @@ public class SecurityConfig {
                     .anyRequest().authenticated())
                     .addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class) // runs before all other filters, setting up a global exception handler for exception uncatchable by the dispatcher servlet
                     .addFilter(authenticationFilter)
-                    .addFilterAfter(new JWTAuthorizationFilter(), AuthenticationFilter.class)
+                    .addFilterAfter(new JWTAuthorizationFilter(tokenRepository), AuthenticationFilter.class)
             .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
