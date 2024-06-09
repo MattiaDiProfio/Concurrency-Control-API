@@ -2,6 +2,8 @@ package com.mdp.next.entity;
 
 import lombok.*;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mdp.next.exception.Role;
 import jakarta.validation.constraints.*;
@@ -40,9 +42,6 @@ public class User {
     @Column(name = "address", nullable = false)
     private String address;
 
-
-
-
 	@NotBlank(message =  "username cannot be blank")
 	@NonNull
 	@Column(nullable = false, unique = true)
@@ -58,5 +57,9 @@ public class User {
     @Role
     @Column(nullable = false)
     private String role;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Token> tokens = new ArrayList<>();
 
 }
