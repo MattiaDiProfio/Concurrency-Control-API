@@ -5,9 +5,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+
+import com.mdp.next.repository.TokenRepository;
 import com.mdp.next.security.filter.AuthenticationFilter;
 import com.mdp.next.security.filter.JWTAuthorizationFilter;
 import com.mdp.next.security.manager.CustomAuthenticationManager;
+import com.mdp.next.service.UserService;
 import com.mdp.next.security.filter.ExceptionHandlerFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,6 +20,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 public class SecurityConfig {
 
     CustomAuthenticationManager authenticationManager;
+    private UserService userService;
+    private TokenRepository tokenRepository;
 
     @SuppressWarnings({ "deprecation", "removal" })
     @Bean
@@ -24,7 +29,7 @@ public class SecurityConfig {
 
         // change the url on which the attemptAuthenticate() method on the authenticationFilter 
         // will be triggered from "/login" (default) to "/authenticate"
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager);
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager, userService, tokenRepository);
         authenticationFilter.setFilterProcessesUrl("/authenticate"); 
 
         http

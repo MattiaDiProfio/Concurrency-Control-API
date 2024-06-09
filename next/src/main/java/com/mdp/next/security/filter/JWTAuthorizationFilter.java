@@ -32,6 +32,8 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         // fetch the jwt token from the request header
         String token = header.replace(SecurityConstants.BEARER, "");
 
+        // TODO : check that the token is not expired 
+
         // validate jwt signature and check for a match
         String user = JWT.require(Algorithm.HMAC512(SecurityConstants.SECRET_KEY))
             .build() // verification builder "building" step

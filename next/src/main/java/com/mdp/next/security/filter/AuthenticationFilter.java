@@ -10,19 +10,22 @@ import java.io.IOException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mdp.next.entity.User;
 import com.mdp.next.security.SecurityConstants;
 import com.mdp.next.security.manager.CustomAuthenticationManager;
+import com.mdp.next.service.UserService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import lombok.AllArgsConstructor;
-import com.mdp.next.entity.AuthenticationResponse;
+import com.mdp.next.entity.*;
+import com.mdp.next.repository.*;
 
 @AllArgsConstructor
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private CustomAuthenticationManager authenticationManager;  
+    private UserService userService;
+    private TokenRepository tokenRepository;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -60,6 +63,15 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             .withSubject(authResult.getName())
             .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.TOKEN_EXPIRATION))
             .sign(Algorithm.HMAC512(SecurityConstants.SECRET_KEY));
+
+        // save the token into a Token instance 
+        // connect the token to the user 
+        User requestUser = userService.getUser(authResult.getName());
+        Token tokenDTO = new Token();
+        tokenDTO.setUser(requestUser);
+        tokenDTO.setActive(true);
+        tokenRepository.save(tokenDTO);
+
         response.addHeader(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
         // include the username and token in the response object 
