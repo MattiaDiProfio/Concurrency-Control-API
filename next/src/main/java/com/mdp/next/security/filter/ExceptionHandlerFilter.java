@@ -6,7 +6,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.mdp.next.exception.TokenExpiredException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.mdp.next.exception.*;
 
@@ -31,6 +30,11 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         } catch (TokenExpiredException e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.getWriter().write("JWT EXPIRED");
+            response.getWriter().flush();
+
+        } catch (LogoutBeforeLoginException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("MUST BE LOGGED IN FIRST");
             response.getWriter().flush();
 
         } catch (RuntimeException e) {

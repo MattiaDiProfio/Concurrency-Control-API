@@ -30,7 +30,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
     }
 
     // thrown when a get request tries to find a non-existing object
-    @ExceptionHandler({InsufficientAssetsException.class, AccountsMustDifferException.class, NonPositiveAmountException.class})
+    @ExceptionHandler({InsufficientAssetsException.class, AccountsMustDifferException.class, NonPositiveAmountException.class, LogoutBeforeLoginException.class})
     public ResponseEntity<Object> handleTransactionExceptions(RuntimeException ex) {
         ErrorResponse error = new ErrorResponse(Arrays.asList(ex.getMessage()));  
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
