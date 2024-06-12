@@ -52,7 +52,7 @@ public class User {
 	@Column(nullable = false)
 	private String password;
 
-    @NotBlank(message = "user role cannot be blank")
+    @NotBlank(message = "role cannot be blank")
     @NonNull
     @Role
     @Column(nullable = false)
