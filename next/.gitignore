@@ -36,5 +36,5 @@ build/
 src/main/java/com/mdp/next/security/SecurityConstants.java
 
 ### Config files ###
-next/src/main/resources/application.properties
-next/src/test/resources/application-test.properties
+src/main/resources/*
+src/test/resources/*
