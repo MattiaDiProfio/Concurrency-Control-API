@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import com.mdp.next.service.UserService;
 import com.mdp.next.entity.*;
 import com.mdp.next.exception.ErrorResponse;
-
 import lombok.AllArgsConstructor;
 import java.util.List;
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class UserController {
     }
 
     @PutMapping("/{userID}")
-    public ResponseEntity<Object> updateUser(@Valid @RequestBody User user, BindingResult result, @PathVariable Long userID) {
+    public ResponseEntity<Object> updateUser(@Valid @RequestBody UserUpdateRequest user, BindingResult result, @PathVariable Long userID) {
 
         if (result.hasErrors()) {
             List<String> errors = new ArrayList<>();
@@ -51,6 +50,7 @@ public class UserController {
             ErrorResponse error = new ErrorResponse(errors);  
             return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
+
         userService.updateUser(user.getEmail(), user.getAddress(), userID);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
