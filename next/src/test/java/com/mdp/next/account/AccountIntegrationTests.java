@@ -63,65 +63,136 @@ public class AccountIntegrationTests {
 	}
 
 
-	@Test
-	@Order(1)
-	public void testGetAllAccounts() throws Exception {
 
+    @Test
+    @Order(1) 
+    public void testGetAccountByUserFailureDueToNoAccount() throws Exception {
+        // test fails because user is present in the database, but there is no
+        // account available to be fetched from them
+
+		RequestBuilder request = MockMvcRequestBuilders.get("/user/1/account").header("Authorization", this.jwtToken);
+
+		mockMvc
+			.perform(request)
+			.andExpect(status().is4xxClientError())
+			.andExpect(jsonPath("$.message", hasItem("The user with id '1' does not have an active account")));
+    }
+
+
+    @Test
+    @Order(2) 
+    public void testCloseAccountFailureDueToNoAccount() throws Exception {
+        // test fails because user does not have an account to be closed
+		RequestBuilder request = MockMvcRequestBuilders.delete("/user/1/account").header("Authorization", this.jwtToken);
+
+		mockMvc
+			.perform(request)
+			.andExpect(status().is4xxClientError())
+			.andExpect(jsonPath("$.message", hasItem("The user with id '1' does not have an active account")));
+    }
+
+
+    @Test
+    @Order(3)
+    public void testOpenAccountSuccess() throws Exception {
+		RequestBuilder request = MockMvcRequestBuilders
+			.post("/user/1/account")
+			.contentType(MediaType.APPLICATION_JSON)
+			.header("Authorization", this.jwtToken)
+			.content("{ \"balance\": \"0.00\" }");
+		
+		mockMvc
+			.perform(request)
+			.andExpect(status().is2xxSuccessful())
+            .andExpect(jsonPath("$.balance").value(0.00))
+            .andExpect(jsonPath("$.userID").value(1L))
+            .andExpect(jsonPath("$.id").value(1L));
+    }
+
+
+	@Test
+	@Order(4)
+	public void testGetAllAccounts() throws Exception {
+		RequestBuilder request = MockMvcRequestBuilders.get("/account/all").header("Authorization", this.jwtToken);
+		mockMvc
+			.perform(request)
+			.andExpect(status().is2xxSuccessful())
+			.andExpect(jsonPath("$", hasSize(1)))
+			.andExpect(jsonPath("$").value(instanceOf(List.class)))
+			.andExpect(jsonPath("$[0].balance").value(0.00))
+			.andExpect(jsonPath("$[0].userID").value(1L))
+			.andExpect(jsonPath("$[0].id").value(1L));
 	}
 
 
     @Test
-    @Order(2)
-    public void testGetAccountByUserSuccess() throws Exception {
-
-    }
-
-
-    @Test
-    @Order(3) 
-    public void testGetAccountByUserFailureDueToNoAccount() throws Exception {
-        // test fails because user is present in the database, but there is no
-        // account available to be fetched from them
-    }
-
-    @Test
-    @Order(4)
-    public void testOpenAccountSuccess() throws Exception {
-
-    }
-
-
-    @Test
     @Order(5)
-    public void testOpenAccountFailureDueToRepetition() throws Exception {
-
+    public void testGetAccountByUserSuccess() throws Exception {
+		RequestBuilder request = MockMvcRequestBuilders
+			.get("/user/1/account")
+			.header("Authorization", this.jwtToken);
+		
+		mockMvc
+			.perform(request)
+			.andExpect(status().is2xxSuccessful())
+            .andExpect(jsonPath("$.balance").value(0.00))
+            .andExpect(jsonPath("$.userID").value(1L))
+            .andExpect(jsonPath("$.id").value(1L));
     }
+
 
     @Test
     @Order(6)
-    public void testOpenAccountFailureDueToInvalidUser() throws Exception {
-        // test fails because user specified does not exist, so an account cannot be associated to it 
+    public void testOpenAccountFailureDueToRepetition() throws Exception {
+        // user with id of 1 already has an account, so this will fail
+        RequestBuilder request = MockMvcRequestBuilders
+			.post("/user/1/account")
+			.contentType(MediaType.APPLICATION_JSON)
+			.header("Authorization", this.jwtToken)
+			.content("{ \"balance\": \"100.00\" }");
+		
+		mockMvc
+			.perform(request)
+			.andExpect(status().is4xxClientError())
+			.andExpect(jsonPath("$.message", hasItem( "The user with id '1' already has an active account")));
     }
 
-
     @Test
-    @Order(7) 
-    public void testCloseAccountSuccess() throws Exception {
+    @Order(7)
+    public void testOpenAccountFailureDueToInvalidUser() throws Exception {
+        // test fails because user specified does not exist, so an account cannot be associated to it 
+		RequestBuilder request = MockMvcRequestBuilders
+            .post("/user/123/account")
+			.contentType(MediaType.APPLICATION_JSON)
+			.header("Authorization", this.jwtToken)
+			.content("{ \"balance\": \"100.00\" }");
 
+		mockMvc
+			.perform(request)
+			.andExpect(status().is4xxClientError())
+			.andExpect(jsonPath("$.message").value("The user with id '123' does not exist in our records"));
     }
 
 
     @Test
     @Order(8) 
-    public void testCloseAccountFailureDueToNoAccount() throws Exception {
-        // test fails because user does not have an account to be closed
+    public void testCloseAccountSuccess() throws Exception {
+        mockMvc.
+            perform(MockMvcRequestBuilders.delete("/user/1/account").header("Authorization", this.jwtToken))
+            .andExpect(status().is2xxSuccessful());
     }
+
 
 
     @Test
     @Order(9) 
     public void testCloseAccountFailureDueToInvalidUser() throws Exception {
         // test fails because there is no user with the given ID in the database
+		RequestBuilder request = MockMvcRequestBuilders.delete("/user/123/account").header("Authorization", this.jwtToken);
+		mockMvc
+			.perform(request)
+			.andExpect(status().is4xxClientError())
+			.andExpect(jsonPath("$.message").value("The user with id '123' does not exist in our records"));
     }
 
 
