@@ -1,4 +1,4 @@
-package com.mdp.next;
+package com.mdp.next.user;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;

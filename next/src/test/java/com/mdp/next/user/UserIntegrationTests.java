@@ -1,4 +1,4 @@
-package com.mdp.next;
+package com.mdp.next.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
@@ -25,7 +25,7 @@ import java.util.List;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(OrderAnnotation.class)
 @ActiveProfiles("test")
-class UserLayerIntegrationTests {
+class UserIntegrationTests {
 
 	@Autowired
 	private MockMvc mockMvc;
