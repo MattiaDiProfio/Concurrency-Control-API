@@ -38,7 +38,7 @@ public class TransactionServiceImpl implements TransactionService {
         Double amount = transaction.getAmount();
 
         // check that the amount is positive and non-zero
-        if (amount <= 0.00) throw new NonPositiveAmountException(transaction.getID());
+        if (amount <= 0.00) throw new NonPositiveAmountException();
 
         Long senderID = transaction.getSenderID();
         Long receiverID = transaction.getReceiverID();
