@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.*;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -43,6 +45,33 @@ public class Transaction {
     @PrePersist // populate the field with the current time whenever a transaction is instantiated
     protected void onCreate() {
         createdAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    // concurrency managements fields 
+    @ElementCollection
+    private List<Account> readSet = new ArrayList<>(); // holds the Account objects the transaction will read from
+
+    @ElementCollection
+    private List<Account> writeSet = new ArrayList<>(); // holds the Account objects the transactions will write to
+
+    @Column(name = "phase")
+    private String currPhase = "WORKING"; // by default, when a transaction is opened, it enters the working phase
+
+    public void addReadObject(Account account) {
+        this.readSet.add(account);
+    }
+
+    public void addWriteObject(Account account) {
+        this.writeSet.add(account);
+    }
+
+    public boolean isYoungerThan(Transaction t) {
+        // TODO : implement check
+        return true;
+    }
+
+    public void abort() {
+        // TODO : abort 
     }
 
 }

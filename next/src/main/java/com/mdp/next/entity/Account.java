@@ -48,4 +48,13 @@ public class Account {
         received.add(transaction);
     }
 
+    public Account(Account account) {
+        setID(account.getID());
+        setUser(account.getUser());
+        setBalance(account.getBalance());
+        setSent(account.getSent());
+        setReceived(account.getReceived());
+        setUserID(account.getUserID());
+    }
+
 }

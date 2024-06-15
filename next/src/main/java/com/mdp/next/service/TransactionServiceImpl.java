@@ -46,26 +46,63 @@ public class TransactionServiceImpl implements TransactionService {
         // ensure that the sender and receiverID are valid (i.e. not equal)
         if (senderID.equals(receiverID)) throw new AccountsMustDifferException();
 
-        // fetch the accounts based on the transaction's receiverID and senderID
-        Account sender = accountService.getAccount(senderID);
-        Account receiver = accountService.getAccount(receiverID);
+        // ================================================ WORKING PHASE ==========================================
+
+        // create tentative copies of the accounts the transaction will operate on
+        Account sender = new Account(accountService.getAccount(senderID));
+        Account receiver = new Account(accountService.getAccount(receiverID));
 
         // ensure that the sender has enough assets to cover the transaction amount
         if (sender.getBalance() < amount) throw new InsufficientAssetsException(senderID);
+
+        // add the accounts to the read and write sets of the transaction
+        transaction.addReadObject(sender);
+        transaction.addReadObject(receiver);
+        transaction.addWriteObject(sender);
+        transaction.addWriteObject(receiver);
 
         // execute the transfer of currency
         sender.setBalance(sender.getBalance() - amount);
         receiver.setBalance(receiver.getBalance() + amount);
 
-        // update both the accounts' sent and received lists 
-        sender.addSentTransaction(transaction);
-        receiver.addReceivedTransaction(transaction);
-
         // connect the accounts to the transaction 
         transaction.setSender(sender);
         transaction.setReceiver(receiver);
 
+        // ================================================ VALIDATION PHASE ==========================================
+        transaction.setCurrPhase("VALIDATION");
+
+        // get all transactions who are in the working phase and were created before or at the same time as T
+        List<Transaction> relevantSet = transactionRepository.getOverlappingTransactions(transaction.getCreatedAt());
+
+        // check that for each transaction U in overlaps, U's readset doesn't overlap T's write set - dirty read
+        // check that for each transaction U in overlaps, U's writeset doesn't overlap T's write set - lost update read
+        for (Transaction u : relevantSet) {
+            boolean dirtyRead = transaction.getWriteSet().stream().noneMatch(u.getReadSet()::contains);
+            boolean lostUpdate = transaction.getWriteSet().stream().noneMatch(u.getWriteSet()::contains);
+
+            if (dirtyRead || lostUpdate) {
+                // conflict was found, abort the youngest transaction
+                if (u.isYoungerThan(transaction)) u.abort();
+                else {
+                    transaction.abort();
+                    throw new ApiRuntimeException("Transaction was aborted due to concurrency conflicts");
+                }
+            }
+
+        }
+
+        // ================================================ COMMIT PHASE ==========================================
+
+        // TODO : ensure changes made by the transaction are made persistent
+        // TODO : ensure that calling setters on methods above doesnt change the JPA entities until the commit phase
+
+        // update both the accounts' sent and received lists 
+        sender.addSentTransaction(transaction);
+        receiver.addReceivedTransaction(transaction);
+
         // save the transaction to repository
+        transaction.setCurrPhase("COMMITTED");
         return transactionRepository.save(transaction);
 
     }
