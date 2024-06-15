@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mdp.next.exception.ApiRuntimeException;
 
 @Getter
 @Setter
@@ -29,10 +28,12 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "sender_id", referencedColumnName = "ID")
+    @JsonIgnore
     private Account sender;
 
     @ManyToOne
     @JoinColumn(name = "receiver_id", referencedColumnName = "ID")
+    @JsonIgnore
     private Account receiver;
 
     @NonNull
@@ -70,19 +71,16 @@ public class Transaction {
         this.writeSet.add(account);
     }
 
+    public void emptyReadWriteSets() {
+        this.writeSet.clear();
+        this.readSet.clear();
+    }
+
     public boolean isYoungerThan(Transaction t) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime a = LocalDateTime.parse(this.getCreatedAt(), formatter);
         LocalDateTime b = LocalDateTime.parse(t.getCreatedAt(), formatter);
         return a.isBefore(b);
-    }
-
-    public void abort() {
-        // empty the transaction's working sets, read and write 
-        // throw an exception to inform the user 
-        this.readSet.clear();
-        this.writeSet.clear();
-        throw new ApiRuntimeException("Transaction with ID of '%s' was aborted due to concurrency conflicts", this.getID());
     }
 
 }

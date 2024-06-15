@@ -69,8 +69,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public void commitChanges(Long accountID, Account account) {
-        Account fetchedAccount = unwrapAccount(accountRepository.findById(accountID), accountID);
-        fetchedAccount.update(account);
+        Account updatedAccount = unwrapAccount(accountRepository.findById(accountID), accountID);
+        updatedAccount.update(account);
+        accountRepository.save(updatedAccount);
     }
     
 }
