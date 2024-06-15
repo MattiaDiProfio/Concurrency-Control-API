@@ -67,5 +67,10 @@ public class AccountServiceImpl implements AccountService {
         if (entity.isPresent()) return entity.get();
         else throw new AccountNotFoundException(userID);
     }
+
+    public void commitChanges(Long accountID, Account account) {
+        Account fetchedAccount = unwrapAccount(accountRepository.findById(accountID), accountID);
+        fetchedAccount.update(account);
+    }
     
 }

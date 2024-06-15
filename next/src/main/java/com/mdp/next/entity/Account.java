@@ -57,4 +57,14 @@ public class Account {
         setUserID(account.getUserID());
     }
 
+    // make a copy of the passed in account, used during transaction commit phase
+    public void update(Account account) {
+        setID(account.getID());
+        setUser(account.getUser());
+        setBalance(account.getBalance());
+        setSent(account.getSent());
+        setReceived(account.getReceived());
+        setUserID(account.getUserID());
+    }
+
 }

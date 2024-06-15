@@ -6,6 +6,8 @@ import lombok.*;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mdp.next.exception.ApiRuntimeException;
 
 @Getter
 @Setter
@@ -49,12 +51,15 @@ public class Transaction {
 
     // concurrency managements fields 
     @ElementCollection
+    @JsonIgnore
     private List<Account> readSet = new ArrayList<>(); // holds the Account objects the transaction will read from
 
     @ElementCollection
+    @JsonIgnore
     private List<Account> writeSet = new ArrayList<>(); // holds the Account objects the transactions will write to
 
     @Column(name = "phase")
+    @JsonIgnore
     private String currPhase = "WORKING"; // by default, when a transaction is opened, it enters the working phase
 
     public void addReadObject(Account account) {
@@ -66,12 +71,18 @@ public class Transaction {
     }
 
     public boolean isYoungerThan(Transaction t) {
-        // TODO : implement check
-        return true;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime a = LocalDateTime.parse(this.getCreatedAt(), formatter);
+        LocalDateTime b = LocalDateTime.parse(t.getCreatedAt(), formatter);
+        return a.isBefore(b);
     }
 
     public void abort() {
-        // TODO : abort 
+        // empty the transaction's working sets, read and write 
+        // throw an exception to inform the user 
+        this.readSet.clear();
+        this.writeSet.clear();
+        throw new ApiRuntimeException("Transaction with ID of '%s' was aborted due to concurrency conflicts", this.getID());
     }
 
 }

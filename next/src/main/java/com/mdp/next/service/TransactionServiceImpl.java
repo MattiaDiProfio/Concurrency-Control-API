@@ -84,27 +84,24 @@ public class TransactionServiceImpl implements TransactionService {
             if (dirtyRead || lostUpdate) {
                 // conflict was found, abort the youngest transaction
                 if (u.isYoungerThan(transaction)) u.abort();
-                else {
-                    transaction.abort();
-                    throw new ApiRuntimeException("Transaction was aborted due to concurrency conflicts");
-                }
+                else transaction.abort();
             }
 
         }
 
         // ================================================ COMMIT PHASE ==========================================
 
-        // TODO : ensure changes made by the transaction are made persistent
-        // TODO : ensure that calling setters on methods above doesnt change the JPA entities until the commit phase
-
+        transaction.setCurrPhase("COMMITTED");
+        
         // update both the accounts' sent and received lists 
         sender.addSentTransaction(transaction);
         receiver.addReceivedTransaction(transaction);
 
-        // save the transaction to repository
-        transaction.setCurrPhase("COMMITTED");
-        return transactionRepository.save(transaction);
+        // set the accounts operated on by the transaction to their tentative copies 
+        accountService.commitChanges(senderID, sender);
+        accountService.commitChanges(receiverID, receiver);
 
+        return transactionRepository.save(transaction);
     }
  
     public static Transaction unwrapTransaction(Optional<Transaction> entity, Long transactionID) {
