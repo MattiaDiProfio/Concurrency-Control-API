@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -72,28 +71,6 @@ public class TransactionServiceTests {
         assertEquals(accountService.getAccount(1L).getBalance(), 110.00);
         assertEquals(accountService.getAccount(2L).getBalance(), 15.00);
         verify(transactionRepository, times(1)).save(transaction);
-    }
-
-    @Test 
-    public void testAbortTransaction() {
-        when(accountService.getAccount(1L)).thenReturn(new Account(100.00));
-        when(accountService.getAccount(2L)).thenReturn(new Account(25.00));
-
-        Transaction transaction = new Transaction(10.00, 1L, 2L);
-        transaction.setID(1L);
-        transaction.setSender(accountService.getAccount(1L));
-        transaction.setReceiver(accountService.getAccount(2L));
-
-        transactionService.placeTransaction(transaction);
-        assertEquals(accountService.getAccount(1L).getBalance(), 110.00);
-        assertEquals(accountService.getAccount(2L).getBalance(), 15.00);
-
-        when(transactionRepository.findById(1L)).thenReturn(Optional.ofNullable(transaction));
-
-        transactionService.abortTransaction(1L);
-        
-        assertEquals(accountService.getAccount(1L).getBalance(), 100.00);
-        assertEquals(accountService.getAccount(2L).getBalance(), 25.00);
     }
 
 

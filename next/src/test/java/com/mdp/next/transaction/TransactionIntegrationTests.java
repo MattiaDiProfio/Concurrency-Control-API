@@ -246,47 +246,4 @@ public class TransactionIntegrationTests {
             .andExpect(jsonPath("$.message", hasItem("The user with id '3' does not have an active account")));
     }
 
-
-
-
-    // @DeleteMapping("/transaction/{transactionID}/abort") - 
-    /*
-        could fail because the receiver account does not have enough funds to "refund" the transaction
-        could fail because either account has been closed down since the transaction was placed
-     */
-    @Test
-    @Order(12)
-    public void testAbortTransactionOk() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get("/transaction/1/abort").header("Authorization", this.senderJWT);
-		mockMvc.perform(request);
-    }
-
-    @Test
-    @Order(13)
-    public void testAbortTransactionFailureDueToInsufficientFunds() throws Exception {
-        // assume receiver of transaction with id of 1, Nicolo, takes out all of his money at an ATM
-
-        RequestBuilder request = MockMvcRequestBuilders.get("/transaction/1/abort").header("Authorization", this.senderJWT);
-		mockMvc.perform(request);
-    }
-
-    @Test
-    @Order(13)
-    public void testAbortTransactionFailureDueToClosedAccount() throws Exception {
-        // close Nicolo's account, now the transaction cannot be aborted anymore
-        // the transaction is all of nicolo's account's transactions are removed from db, so we check that transaction with id of 1 and 2 are not 
-        // in the db anymore
-        mockMvc.perform(MockMvcRequestBuilders.delete("/user/2/account").header("Authorization", this.senderJWT));
-
-        RequestBuilder request = MockMvcRequestBuilders.delete("/transaction/1/abort").header("Authorization", this.senderJWT);
-		mockMvc.perform(request)
-            .andExpect(status().is4xxClientError())
-            .andExpect(jsonPath("$.message", hasItem("The transaction with id '1' was not found")));
-
-        request = MockMvcRequestBuilders.delete("/transaction/2/abort").header("Authorization", this.senderJWT);
-		mockMvc.perform(request)
-            .andExpect(status().is4xxClientError())
-            .andExpect(jsonPath("$.message", hasItem("The transaction with id '2' was not found")));
-    }
-
 }

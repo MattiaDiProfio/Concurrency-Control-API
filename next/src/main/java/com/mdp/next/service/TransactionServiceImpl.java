@@ -69,30 +69,6 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepository.save(transaction);
 
     }
-
-    @Override   
-    public void abortTransaction(Long transactionID) {
-        Transaction transaction = unwrapTransaction(transactionRepository.findById(transactionID), transactionID);
-
-        Double amount = transaction.getAmount();       
-        Account sender = transaction.getSender();
-        Account receiver = transaction.getReceiver();
-        Long receiverID = transaction.getReceiverID();
-
-        // check if the receiver account has enough assets to cover the transaction abort 
-        Account uptodateReceiver = accountService.getAccount(receiverID);
-        if (uptodateReceiver.getBalance() < amount) throw new InsufficientAssetsException(receiverID);
-
-        // check that both accounts are still active
-        if (sender == null || receiver == null) {
-            throw new AccountNotActiveException(transactionID, transaction.getSenderID(), receiverID);
-        } 
-
-        // revert the transaction amount
-        sender.setBalance(sender.getBalance() + amount);
-        receiver.setBalance(receiver.getBalance() - amount);
-
-    }
  
     public static Transaction unwrapTransaction(Optional<Transaction> entity, Long transactionID) {
         if (entity.isPresent()) return entity.get();

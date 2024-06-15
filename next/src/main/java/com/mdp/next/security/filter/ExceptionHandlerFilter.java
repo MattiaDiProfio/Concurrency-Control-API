@@ -16,30 +16,29 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
 
-        // TODO turn the following repetitive code into a function!
         } catch (UserNotFoundException e) { 
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.getWriter().write("Username doesn't exist");
+            response.getWriter().write("Username does not exist");
             response.getWriter().flush();
 
         } catch (JWTVerificationException e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().write("JWT NOT VALID");
+            response.getWriter().write("You provided an invalid JWT token");
             response.getWriter().flush();
 
         } catch (TokenExpiredException e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().write("JWT EXPIRED");
+            response.getWriter().write("You provided an expired JWT token");
             response.getWriter().flush();
 
         } catch (LogoutBeforeLoginException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("MUST BE LOGGED IN FIRST");
+            response.getWriter().write("Cannot logout before login");
             response.getWriter().flush();
 
         } catch (RuntimeException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("BAD REQUEST");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("Something went wrong while processing your request");
             response.getWriter().flush();
         }
     }

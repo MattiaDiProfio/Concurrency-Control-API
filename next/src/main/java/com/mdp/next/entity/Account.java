@@ -40,7 +40,6 @@ public class Account {
     @Column(name = "user_id", unique = true)
     private Long userID;
 
-
     public void addSentTransaction(Transaction transaction) {
         sent.add(transaction);
     }
