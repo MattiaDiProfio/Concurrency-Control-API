@@ -1,7 +1,7 @@
 package com.mdp.next.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 import com.mdp.next.entity.*;
 import com.mdp.next.exception.*;
@@ -56,12 +56,8 @@ public class TransactionServiceImpl implements TransactionService {
         // ensure that the sender has enough assets to cover the transaction amount
         if (sender.getBalance() < amount) throw new InsufficientAssetsException(senderID);
 
-        // add the accounts to the read and write sets of the transaction
-        t.addReadObject(sender);
-        t.addReadObject(receiver);
-        t.addWriteObject(sender);
-        t.addWriteObject(receiver);
-        transactionRepository.save(t);
+        // the readset and writeset of a transaction will always only contain the transaction's sender and receiver 
+        // accounts, so there is no need to explicitly define this field
 
         // execute the transfer of currency
         sender.setBalance(sender.getBalance() - amount);
@@ -79,20 +75,37 @@ public class TransactionServiceImpl implements TransactionService {
 
         // check that for each transaction U in overlaps, U's readset doesn't overlap T's write set - dirty read
         // check that for each transaction U in overlaps, U's writeset doesn't overlap T's write set - lost update read
+
+        // define the readset and writeset for transaction T
+        List<Account> T_readSet = new ArrayList<>();
+        T_readSet.add(t.getSender());
+        T_readSet.add(t.getReceiver());
+
+        List<Account> T_writeSet = new ArrayList<>();
+        T_writeSet.add(t.getSender());
+        T_writeSet.add(t.getReceiver());
+
         for (Transaction u : relevantSet) {
-            boolean dirtyRead = t.getWriteSet().stream().noneMatch(u.getReadSet()::contains);
-            boolean lostUpdate = t.getWriteSet().stream().noneMatch(u.getWriteSet()::contains);
+
+            // compute the readset and writeset for transaction U
+            List<Account> U_readSet = new ArrayList<>();
+            U_readSet.add(u.getSender());
+            U_readSet.add(u.getReceiver());
+
+            List<Account> U_writeSet = new ArrayList<>();
+            U_writeSet.add(u.getSender());
+            U_writeSet.add(u.getReceiver());
+
+            boolean dirtyRead = T_writeSet.stream().noneMatch(U_readSet::contains);
+            boolean lostUpdate = T_writeSet.stream().noneMatch(U_writeSet::contains);
 
             if (dirtyRead || lostUpdate) {
                 // conflict was found, abort the youngest transaction
-                if (u.isYoungerThan(t)) {
-                    u.emptyReadWriteSets();
-                    transactionRepository.save(u);
-                } else {
-                    t.emptyReadWriteSets();
-                    transactionRepository.save(t);
+                // when u is the youngest transaction, nothing happens, and we assume an implicit abort
+                // when t is the youngest, we exit out of this method by throwing an exception
+                if (!u.isYoungerThan(t)) {
                     throw new ApiRuntimeException("The transaction could not be placed due to concurrency issues");
-                }
+                } 
             }
 
         }
@@ -100,13 +113,6 @@ public class TransactionServiceImpl implements TransactionService {
         // ================================================ COMMIT PHASE ==========================================
 
         t.setCurrPhase("COMMITTED");
-
-        // empty the read and write sets of t, since the transaction is in the commit phase
-        t.emptyReadWriteSets();
-               
-        // update both the accounts' sent and received lists 
-        sender.addSentTransaction(t);
-        receiver.addReceivedTransaction(t);
 
         // set the accounts operated on by the transaction to their tentative copies 
         accountService.commitChanges(senderID, sender);
