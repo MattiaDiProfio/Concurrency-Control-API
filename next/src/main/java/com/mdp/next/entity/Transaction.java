@@ -26,12 +26,10 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "sender_id", referencedColumnName = "ID")
-    @JsonIgnore
     private Account sender;
 
     @ManyToOne
     @JoinColumn(name = "receiver_id", referencedColumnName = "ID")
-    @JsonIgnore
     private Account receiver;
 
     @NonNull
