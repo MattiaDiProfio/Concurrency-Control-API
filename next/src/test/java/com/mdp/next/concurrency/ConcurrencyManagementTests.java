@@ -22,7 +22,8 @@ import java.util.concurrent.TimeUnit;
 @TestMethodOrder(OrderAnnotation.class)
 @ActiveProfiles("test")
 public class ConcurrencyManagementTests {
-        @Autowired
+    
+	@Autowired
 	private MockMvc mockMvc;
 
 	@Autowired
@@ -91,7 +92,6 @@ public class ConcurrencyManagementTests {
         this.receiverJWT = null;
 	}
 
-
     @Test
     public void testPlaceTransactionOk() throws Exception {
 
@@ -139,5 +139,23 @@ public class ConcurrencyManagementTests {
 
 
     }
+
+	@Test
+	@Order(1)
+	public void testIndependentTransactions() {
+
+	}
+
+	@Test	
+	@Order(2) 
+	public void testInconsistentRetrievalHandling() {
+
+	}
+
+	@Test		
+	@Order(3)
+	public void testLostUpdateHandling() {
+
+	}
 
 }
