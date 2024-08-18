@@ -36,6 +36,12 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler({UnauthorizedAccessException.class})
+    public ResponseEntity<Object> handleTransactionExceptions(UnauthorizedAccessException ex) {
+        ErrorResponse error = new ErrorResponse(Arrays.asList(ex.getMessage()));  
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
     // triggered by unsuccessfull user deletion operation
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<Object> handleDataAccessException(EmptyResultDataAccessException ex) {

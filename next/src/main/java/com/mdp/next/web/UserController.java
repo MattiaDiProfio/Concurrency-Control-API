@@ -1,15 +1,17 @@
 package com.mdp.next.web;
 
 import org.springframework.http.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import com.mdp.next.service.UserService;
 import com.mdp.next.entity.*;
+import com.mdp.next.exception.UnauthorizedAccessException;
 import com.mdp.next.exception.ErrorResponse;
 import lombok.AllArgsConstructor;
 import java.util.List;
 import java.util.ArrayList;
-
+import org.springframework.security.core.Authentication;
 import jakarta.validation.Valid;
 
 @AllArgsConstructor
@@ -26,6 +28,27 @@ public class UserController {
 
     @GetMapping("/{userID}")
     public ResponseEntity<UserDTO> getUser(@PathVariable Long userID) {
+
+        // this object will never be null, since in order for this endpoint to be reached, the JWT filter will
+        // have been triggered by now! hence, if we are here, its because SCH's authentication is not null!!
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // here we are checking that the logged in user is either an authorized ADMIN, or they are trying to 
+        // access resoruces tied to an account they own, and not someone else's!!!!
+
+        // get the logged-in user's username by querying the security context holder
+        String loggedInUserUsername = authentication.getPrincipal().toString();
+
+        User user = userService.getUser(loggedInUserUsername);
+        Long id = user.getUserId();
+        String role = user.getRole();
+
+        // the user is UNauthorised to get these resources!!!!
+        if (id != userID && !role.equals("ADMIN")) {
+            throw new UnauthorizedAccessException();
+        } 
+
+        // the user is either the owner or an admin, proceed with the request!
         return new ResponseEntity<>(userService.getUser(userID), HttpStatus.OK);
     }
 
