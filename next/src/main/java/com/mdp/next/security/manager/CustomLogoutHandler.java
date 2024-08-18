@@ -34,7 +34,9 @@ public class CustomLogoutHandler implements LogoutHandler {
 
         Token storedToken = tokenRepository.findByBody(token).orElse(null);
 
-        if (!storedToken.isActive()) {
+        // check that storedToken is not null - this can occur if the JWT provided is a random string input 
+        // and not an actual or previously valid token!
+        if (storedToken != null && !storedToken.isActive()) {
             try {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().write("Cannot logout using an expired token");

@@ -65,7 +65,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         
         // make any previous token associated with the request username inactive before dispatching new token
         User requestUser = userService.getUser(authResult.getName());
-        List<Token> previousTokens = tokenRepository.findAllTokenByUser(requestUser.getID());
+        List<Token> previousTokens = tokenRepository.findAllTokenByUser(requestUser.getUserId());
         for (Token t : previousTokens) {
             t.setActive(false);
             tokenRepository.save(t);

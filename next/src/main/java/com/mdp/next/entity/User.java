@@ -19,8 +19,8 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long ID;
+    @Column(name = "user_id")
+    private Long userId;
 
     @NonNull
     @NotBlank(message = "User's name cannot be blank")

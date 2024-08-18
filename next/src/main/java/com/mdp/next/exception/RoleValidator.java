@@ -7,7 +7,7 @@ public class RoleValidator implements ConstraintValidator<Role, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return (value.equals("BASE") || value.equals("ADMIN"));
+        return (value.equals("CUSTOMER") || value.equals("ADMIN"));
     }
     
 }

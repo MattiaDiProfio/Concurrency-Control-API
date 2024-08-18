@@ -20,7 +20,7 @@ public class UserDTO {
     private String role;
 
     public UserDTO (User user) {
-        setID(user.getID());
+        setID(user.getUserId());
         setName(user.getName());
         setEmail(user.getEmail());
         setAddress(user.getAddress());

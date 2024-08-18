@@ -13,8 +13,8 @@ public class Token {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long ID;
+    @Column(name = "token_id")
+    private Long tokenId;
 
     @Column(name = "is_active")
     private boolean isActive;
@@ -23,7 +23,7 @@ public class Token {
     private String body;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "ID")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 
 }

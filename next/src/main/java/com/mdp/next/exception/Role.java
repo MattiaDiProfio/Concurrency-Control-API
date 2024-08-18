@@ -13,7 +13,7 @@ import jakarta.validation.Payload;
 public @interface Role {
 
     //default message if constraint is violated
-    String message() default "User role must be of type 'BASE' or 'ADMIN'";
+    String message() default "User role must be of type 'CUSTOMER' or 'ADMIN'";
     //boilerplate parameters.
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

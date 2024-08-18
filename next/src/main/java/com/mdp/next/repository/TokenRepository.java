@@ -9,8 +9,8 @@ import java.util.List;
 public interface TokenRepository extends CrudRepository<Token, Long> {
     @Query("""
         SELECT t FROM Token t inner JOIN User u
-        ON t.user.id = u.id
-        WHERE t.user.id = :userId and t.isActive = true
+        ON t.user.userId = u.userId
+        WHERE t.user.userId = :userId and t.isActive = true
     """)
     List<Token> findAllTokenByUser(Long userId);
     Optional<Token> findByBody(String body);
