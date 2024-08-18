@@ -22,11 +22,6 @@ public class User {
     @Column(name = "id")
     private Long ID;
 
-    @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "account_id", referencedColumnName = "ID")
-    private Account account;
-
     @NonNull
     @NotBlank(message = "User's name cannot be blank")
     @Column(name = "full_name", nullable = false)

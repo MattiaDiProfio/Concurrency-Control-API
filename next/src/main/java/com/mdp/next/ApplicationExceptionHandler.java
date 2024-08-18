@@ -23,14 +23,14 @@ import com.mdp.next.exception.*;
 public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
 
     // thrown when a get request tries to find a non-existing object
-    @ExceptionHandler({UserNotFoundException.class, AccountNotFoundException.class, TransactionNotFoundException.class, UserAccountUniquenessViolationException.class})
+    @ExceptionHandler({UserNotFoundException.class})
     public ResponseEntity<Object> handleResourceNotFoundException(RuntimeException ex) {
         ErrorResponse error = new ErrorResponse(Arrays.asList(ex.getMessage()));  
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     // thrown when a get request tries to find a non-existing object
-    @ExceptionHandler({InsufficientAssetsException.class, AccountsMustDifferException.class, NonPositiveAmountException.class, LogoutBeforeLoginException.class})
+    @ExceptionHandler({LogoutBeforeLoginException.class})
     public ResponseEntity<Object> handleTransactionExceptions(RuntimeException ex) {
         ErrorResponse error = new ErrorResponse(Arrays.asList(ex.getMessage()));  
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);

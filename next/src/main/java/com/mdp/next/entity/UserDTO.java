@@ -13,7 +13,6 @@ import lombok.Setter;
 public class UserDTO {
 
     private Long ID;
-    private Account account;
     private String name;
     private String email;
     private String address;
@@ -22,7 +21,6 @@ public class UserDTO {
 
     public UserDTO (User user) {
         setID(user.getID());
-        setAccount(user.getAccount());
         setName(user.getName());
         setEmail(user.getEmail());
         setAddress(user.getAddress());

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;   
-    AccountRepository accountRepository; 
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override

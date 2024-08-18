@@ -64,8 +64,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         
         // make any previous token associated with the request username inactive before dispatching new token
-        // TODO : use the method in the spring-auth-playground tokenrepo to fetch any active token by username, then make
-        // them all invalid 
         User requestUser = userService.getUser(authResult.getName());
         List<Token> previousTokens = tokenRepository.findAllTokenByUser(requestUser.getID());
         for (Token t : previousTokens) {

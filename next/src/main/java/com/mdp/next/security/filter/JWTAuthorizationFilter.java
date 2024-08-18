@@ -39,7 +39,6 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         // fetch the jwt token from the request header
         String token = header.replace(SecurityConstants.BEARER, "");
 
-        // TODO : check that the token is not expired 
         Token fetchedToken = tokenRepository.findByBody(token).orElse(null);
         if (!fetchedToken.isActive()) throw new TokenExpiredException();
 
