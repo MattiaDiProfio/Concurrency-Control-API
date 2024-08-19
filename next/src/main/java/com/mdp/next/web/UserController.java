@@ -23,6 +23,17 @@ public class UserController {
 
     @GetMapping("/all")
     public ResponseEntity<List<UserDTO>> getUsers() {
+
+        // only admins can access this endpoint!
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedInUserUsername = authentication.getPrincipal().toString();
+        User user = userService.getUser(loggedInUserUsername);
+        String role = user.getRole();
+
+        if (!role.equals("ADMIN")) {
+            throw new UnauthorizedAccessException("Only admins can access this endpoint!");
+        }
+
         return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 
@@ -33,7 +44,7 @@ public class UserController {
         // have been triggered by now! hence, if we are here, its because SCH's authentication is not null!!
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // here we are checking that the logged in user is either an authorized ADMIN, or they are trying to 
+        // here we are checking that the logged in user is either an authorized ADMIN, or they are trying to
         // access resoruces tied to an account they own, and not someone else's!!!!
 
         // get the logged-in user's username by querying the security context holder
@@ -45,7 +56,7 @@ public class UserController {
 
         // the user is UNauthorised to get these resources!!!!
         if (id != userID && !role.equals("ADMIN")) {
-            throw new UnauthorizedAccessException();
+            throw new UnauthorizedAccessException("Unauthorized access! You must be the resource owner or an admin to interact with this resource");
         } 
 
         // the user is either the owner or an admin, proceed with the request!
@@ -56,8 +67,8 @@ public class UserController {
     public ResponseEntity<Object> createUser(@Valid @RequestBody User user, BindingResult result) {
         if (result.hasErrors()) {
             List<String> errors = new ArrayList<>();
-            result.getAllErrors().forEach((error) -> errors.add(error.getDefaultMessage())); 
-            ErrorResponse error = new ErrorResponse(errors);  
+            result.getAllErrors().forEach((error) -> errors.add(error.getDefaultMessage()));
+            ErrorResponse error = new ErrorResponse(errors);
             return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
         }
         userService.createUser(user);
@@ -66,6 +77,18 @@ public class UserController {
 
     @PutMapping("/{userID}")
     public ResponseEntity<Object> updateUser(@Valid @RequestBody UserUpdateRequest user, BindingResult result, @PathVariable Long userID) {
+
+        // check that the user is authorized to make this request!
+        // only the account owner, not event admins, should be able to submit this request
+        // only admins can access this endpoint!
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedInUserUsername = authentication.getPrincipal().toString();
+        User loggedInUser = userService.getUser(loggedInUserUsername);
+        Long loggedInUserUserID = loggedInUser.getUserId();
+
+        if (loggedInUserUserID != userID) {
+            throw new UnauthorizedAccessException("Unauthorized access! Only the profile owner can access this resource.");
+        }
 
         if (result.hasErrors()) {
             List<String> errors = new ArrayList<>();
@@ -80,6 +103,18 @@ public class UserController {
 
     @DeleteMapping("/{userID}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long userID) {
+
+        // check that the user is authorized to make this request!
+        // only the account owner, not event admins, should be able to submit this request
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedInUserUsername = authentication.getPrincipal().toString();
+        User loggedInUser = userService.getUser(loggedInUserUsername);
+        Long loggedInUserUserID = loggedInUser.getUserId();
+
+        if (loggedInUserUserID != userID) {
+            throw new UnauthorizedAccessException("Unauthorized access! Only the profile owner can access this resource.");
+        }
+
         userService.deleteUser(userID);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
