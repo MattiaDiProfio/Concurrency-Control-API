@@ -14,13 +14,17 @@ import java.util.List;
 import java.util.ArrayList;
 import jakarta.validation.Valid;
 
-@AllArgsConstructor
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
-    private final AuthorizationFilter authorizationFilter = new AuthorizationFilter(userService);
+    private final AuthorizationFilter authorizationFilter;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+        this.authorizationFilter = new AuthorizationFilter(userService);
+    }
 
     @GetMapping("/all")
     public ResponseEntity<List<UserDTO>> getUsers() {
