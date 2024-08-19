@@ -1,36 +1,127 @@
 package com.mdp.next.security.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ActiveProfiles("test")
 public class UserIntegrationTests {
 
-    // TODO : simulate all requests in the Controller layer, including authorization and access to resources
+    @Autowired
+    private MockMvc mockMvc;
 
-    /*
-     * setup method
-     * - register and login 2 different users, 1 admin and 1 customer
-     *
-     * endpoints to test are :
-     *
-     * 1. GET /user/all
-     * - attempt to send request with customer -> fails due to missing ADMIN role
-     * - attempt to send request with admin -> assert list returned is of length 2, and that a customer and admin are present
-     *
-     * 2. GET /user/userID
-     * - attempt to get /user/1 and 2 with ADMIN -> both succeed
-     * - attempt to get /user/1 with customer -> fails
-     * - attempt to get /user/2 with customer -> success since they own the profile
-     *
-     * 3. PUT /user/userID
-     * - attempt to edit user 1 with customer -> fails
-     * - attempt to edit user 2 with admin -> fails
-     * - attempt to update email on user 2 with customer -> success since the customer owns this profile
-     *
-     * 4. DELETE /user/userID
-     * - attempt to delete user 1 with customer -> fails
-     * - attempt to delete user 2 with admin -> fails
-     * - attempt to delete user 1 with admin -> success since it's the admin's profile
-     *
-     * teardown method
-     * - logout the remaining logged-in users, 1 admin
-     *
-     * */
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private String adminJwt;
+    private String customerJwt;
+
+    @BeforeAll
+    void registerAndLogin() throws Exception {
+        // register a Customer User and an Admin user
+        this.mockMvc
+            .perform(MockMvcRequestBuilders
+            .post("/user/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{ \"name\": \"customer\", \"email\": \"customer@email.com\", \"address\": \"customer\", \"username\": \"customer\", \"password\": \"customer123\", \"role\": \"CUSTOMER\" }"));
+
+        this.mockMvc
+            .perform(MockMvcRequestBuilders
+            .post("/user/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{ \"name\": \"admin\", \"email\": \"admin@email.com\", \"address\": \"admin\", \"username\": \"admin\", \"password\": \"admin123\", \"role\": \"ADMIN\" }"));
+
+        // login both users
+        ResultActions loginCustomerAction = this.mockMvc
+            .perform(MockMvcRequestBuilders
+            .post("/authenticate")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{ \"username\": \"customer\", \"password\": \"customer123\" }"));
+        MvcResult mvcResult = loginCustomerAction.andReturn();
+        String customerActionJwt = mvcResult.getResponse().getContentAsString();
+
+        ResultActions loginAdminAction = this.mockMvc
+            .perform(MockMvcRequestBuilders
+            .post("/authenticate")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{ \"username\": \"admin\", \"password\": \"admin123\" }"));
+        mvcResult = loginAdminAction.andReturn();
+        String adminActionJwt = mvcResult.getResponse().getContentAsString();
+
+        // extract the token from the response object and store it to be passed into subsequent tests
+        this.customerJwt = "Bearer " + this.objectMapper.readTree(customerActionJwt).get("token").asText();
+        this.adminJwt = "Bearer " + this.objectMapper.readTree(adminActionJwt).get("token").asText();
+    }
+
+    @Test
+    public void getProfileUnauthorized() throws Exception {
+        // GET /user/2
+        // customer is trying to access another user's (the admin) profile, which is not allowed
+    }
+
+    @Test
+    public void getCustomerProfileSuccess1() throws Exception {
+        // GET /user/1
+        // admin tries to access a customer's profile and they succeed
+    }
+
+    @Test
+    public void getCustomerProfileSuccess2() throws Exception {
+        // GET /user/1
+       // customer tries to access their profile and they succeed
+    }
+
+    @Test
+    public void getAllUsersUnauthorized() throws Exception {
+        // GET /user/all
+        // test fails because logged in customer is trying to access admin-only resources
+    }
+
+    @Test
+    public void getAllUsersSuccessful() throws Exception {
+        // admin is able to view all users since this is an admin-only endpoint
+    }
+
+    @Test
+    public void updateCustomerUnauthorized() throws Exception {
+        // admin tries to update the email of the customer - fails
+    }
+
+    @Test
+    public void updateAdminUnauthorized() throws Exception {
+        // customer tries to update the email of the admin - fails
+    }
+
+    @Test
+    public void updateCustomerSuccess() throws Exception {
+        // customer tries to update their email - ok
+    }
+
+    @Test
+    public void deleteCustomerUnauthorized() throws Exception {
+        // admin tries to delete a customer account - fails
+    }
+
+    @Test
+    public void deleteAdminUnauthorized() throws Exception {
+        // customer tries to delete admin account - fails
+    }
+
+    @Test
+    public void deleteAdminSuccess() throws Exception {
+        // admin tries to delete their own account - ok
+    }
+
 }
