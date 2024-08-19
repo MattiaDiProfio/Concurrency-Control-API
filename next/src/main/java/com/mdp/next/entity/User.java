@@ -2,8 +2,7 @@ package com.mdp.next.entity;
 
 import lombok.*;
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mdp.next.exception.Role;
 import jakarta.validation.constraints.*;
@@ -55,5 +54,10 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Token> tokens = new ArrayList<>();
+    private HashSet<Token> tokens = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "accountOwner", cascade = CascadeType.ALL)
+    private HashSet<Account> accounts = new HashSet<>();
+
 }

@@ -9,7 +9,6 @@ import com.mdp.next.service.UserService;
 import com.mdp.next.entity.*;
 import com.mdp.next.exception.UnauthorizedAccessException;
 import com.mdp.next.exception.ErrorResponse;
-import lombok.AllArgsConstructor;
 import java.util.List;
 import java.util.ArrayList;
 import jakarta.validation.Valid;
