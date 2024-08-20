@@ -1,11 +1,4 @@
-<div style="display: flex; justify-content: space-between; align-items: center;">
-  <div>
-    <h2>Register</h2>
-  </div>
-  <div style="margin-top: 20px;">
-    <a href="javascript:history.back()" style="text-decoration: none; background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 5px;"><b>Back</b></a>
-  </div>
-</div>
+## Register
 
 Register a new user. Pay close attention to the payload sent, and ensure that no fields are missing or invalid.
 

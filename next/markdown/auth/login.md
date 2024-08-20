@@ -1,11 +1,4 @@
-<div style="display: flex; justify-content: space-between; align-items: center;">
-  <div>
-    <h2>Login</h2>
-  </div>
-  <div style="margin-top: 20px;">
-    <a href="javascript:history.back()" style="text-decoration: none; background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 5px;"><b>Back</b></a>
-  </div>
-</div>
+## Login
 
 Login with a registered profile in order to access further endpoints. The JWT token 
 required to authenticate your requests will be included in a successful response's payload.
