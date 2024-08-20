@@ -23,7 +23,10 @@ public class Account {
     @Column(name = "account_id")
     private Long accountId;
 
+    @Column(name = "type", nullable = false)
     @NonNull
+    private String type;
+
     @Column(name = "balance", nullable = false)
     private Double balance;
 

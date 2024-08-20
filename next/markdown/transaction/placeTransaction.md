@@ -4,7 +4,7 @@ Given that the logged-in user owns the sending account, this endpoint allows
 them to transfer money to any other open account, as long as they have enough funds to cover
 the transactions, alongside other restrictions.
 
-* URL `/transaction
+* URL `/transaction`
 * Method : `POST`
 * Auth required : **YES**
 * Request Structure
