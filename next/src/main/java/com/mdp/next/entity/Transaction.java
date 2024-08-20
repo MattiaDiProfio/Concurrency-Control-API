@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 import jakarta.persistence.*;
-import java.util.HashSet;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 
@@ -59,7 +59,7 @@ public class Transaction {
             joinColumns = @JoinColumn(name = "transaction_id"),
             inverseJoinColumns = @JoinColumn(name = "account_id")
     )
-    private HashSet<Account> readSet;
+    private List<Account> readSet;
 
     @ManyToMany
     @JoinTable(
@@ -67,7 +67,7 @@ public class Transaction {
             joinColumns = @JoinColumn(name = "transaction_id"),
             inverseJoinColumns = @JoinColumn(name = "account_id")
     )
-    private HashSet<Account> writeSet;
+    private List<Account> writeSet;
 
     // since the transaction's sender and receiver are excluded by the JsonIgnore
     // explicitly show the accountId of the sender and receiver, this will be removed
