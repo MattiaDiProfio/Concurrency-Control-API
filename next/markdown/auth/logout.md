@@ -5,12 +5,10 @@ will invalidate the current token used by the user to access API resources.
 * URL `/logout`
 * Method : `POST`
 * Auth required : **YES**
-* Request Structure **(Headers)** : 
+* Request Structure : 
 
 ```json
-{
-    "Authorization" : "[valid token]"
-}
+{}
 ```
 
 ### Success Response
