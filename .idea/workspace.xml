@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="15b2382a-a2a2-45d8-9861-62f47557dd26" name="Changes" comment="" />
+    <list default="true" id="15b2382a-a2a2-45d8-9861-62f47557dd26" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/next/markdown/transaction/placeTransaction.md" beforeDir="false" afterPath="$PROJECT_DIR$/next/markdown/transaction/placeTransaction.md" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,6 +21,9 @@
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="2hWKOVVK4k1BAnBathWGNHNQn74" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -59,7 +65,7 @@
       <option name="presentableId" value="Default" />
       <updated>1717704366442</updated>
       <workItem from="1717704373145" duration="934000" />
-      <workItem from="1724145763998" duration="9699000" />
+      <workItem from="1724145763998" duration="10943000" />
     </task>
     <servers />
   </component>
