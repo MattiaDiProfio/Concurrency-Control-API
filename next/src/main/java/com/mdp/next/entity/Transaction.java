@@ -28,6 +28,15 @@ public class Transaction {
     @Column(name = "amount", nullable = false)
     private Double amount;
 
+    // since the transaction's sender and receiver are excluded by the JsonIgnore
+    // explicitly show the accountId of the sender and receiver, this will be removed
+    // once testing is completed!
+    @Column(name = "sender_account_id")
+    private Long senderAccountId;
+
+    @Column(name = "receiver_account_id")
+    private Long receiverAccountId;
+
     @ManyToOne
     @JoinColumn(name = "sender_account", referencedColumnName = "account_id")
     @JsonIgnore
@@ -38,21 +47,28 @@ public class Transaction {
     @JsonIgnore
     private Account receiver;
 
+    // >>>>>>>>>>>>>>>>>>>>>>>> OCC related fields >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     @Column(name = "validation_id")
+    @JsonIgnore
     private Long validationId;
 
     @Column(name = "starttime")
+    @JsonIgnore
     private LocalDateTime transactionStartTimeStamp;
 
     @Column(name = "working_phase_endtime")
+    @JsonIgnore
     private LocalDateTime transactionEndWorkingPhaseTimeStamp;
 
     @Column(name = "validation_phase_endtime")
+    @JsonIgnore
     private LocalDateTime transactionEndValidationPhaseTimeStamp;
 
     @Column(name = "endtime")
+    @JsonIgnore
     private LocalDateTime transactionEndTimeStamp;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "transaction_read_set",
@@ -61,6 +77,7 @@ public class Transaction {
     )
     private List<Account> readSet;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "transaction_write_set",
@@ -69,12 +86,4 @@ public class Transaction {
     )
     private List<Account> writeSet;
 
-    // since the transaction's sender and receiver are excluded by the JsonIgnore
-    // explicitly show the accountId of the sender and receiver, this will be removed
-    // once testing is completed!
-    @Column(name = "sender_account_id")
-    private Long senderAccountId;
-
-    @Column(name = "receiver_account_id")
-    private Long receiverAccountId;
 }

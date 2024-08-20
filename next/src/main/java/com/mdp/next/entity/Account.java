@@ -27,21 +27,20 @@ public class Account {
     @Column(name = "balance", nullable = false)
     private Double balance;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     private List<Transaction> sentTransactions;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
     private List<Transaction> receivedTransactions;
+
+    // since accountOwner is excluded by JsonIgnore, explicitly show the account owner user ID for development purposes
+    // this field will be removed once testing is done!
+    @Column(name = "account_owner_id")
+    private Long accountOwnerId;
 
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "account_owner", referencedColumnName = "user_id")
     private User accountOwner;
 
-    // since accountOwner is excluded by JsonIgnore, explicitly show the account owner user ID for development purposes
-    // this field will be removed once testing is done!
-    @Column(name = "account_owner_id")
-    private Long accountOwnerId;
 }
