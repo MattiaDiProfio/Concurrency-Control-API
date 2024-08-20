@@ -28,9 +28,9 @@ due to serialisation/deserialization measures in place.
     "id" : "[userId]"
   },
   {
-    ...
+    "..."
   }, 
-  ...
+  "..."
 ]
 ```
 

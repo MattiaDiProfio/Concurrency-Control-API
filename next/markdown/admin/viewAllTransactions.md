@@ -26,9 +26,9 @@ are shown by two supplementary fields in the response objects.
     "receiverAccountId" : 5
   },
   {
-    ...
+    "..."
   }, 
-  ...
+  "..."
 ]
 ```
 

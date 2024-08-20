@@ -30,7 +30,7 @@ while Transactions are included into the response object.
             "senderAccountId" : 2, 
             "receiverAccountId" : 5
           },
-          ...
+          "..."
         ],
       "receivedTransactions" : [
           {
@@ -39,13 +39,13 @@ while Transactions are included into the response object.
             "senderAccountId" : 3,
             "receiverAccountId" : 2
           },
-          ...
+          "..."
         ],
   },
   {
-    ...
+    "..."
   }, 
-  ...
+  "..."
 ]
 ```
 
