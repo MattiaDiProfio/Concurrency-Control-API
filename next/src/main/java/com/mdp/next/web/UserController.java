@@ -62,7 +62,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    public ResponseEntity<ErrorResponse> extractPayloadErrors(BindingResult result) {
+    public static ResponseEntity<ErrorResponse> extractPayloadErrors(BindingResult result) {
         List<String> errors = new ArrayList<>();
         result.getAllErrors().forEach((error) -> errors.add(error.getDefaultMessage()));
         ErrorResponse error = new ErrorResponse(errors);

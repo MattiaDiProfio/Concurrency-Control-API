@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(String newEmail, String newAddress, Long userID) {
-        if (!userRepository.findById(userID).isPresent()) throw new UserNotFoundException(userID, "user");
+        if (!userRepository.findById(userID).isPresent()) throw new UserNotFoundException(userID);
         User user = unwrapUser(userRepository.findById(userID), userID);
         user.setEmail(newEmail);
         user.setAddress(newAddress);
@@ -56,13 +56,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long userID) {
-        if (!userRepository.findById(userID).isPresent()) throw new UserNotFoundException(userID, "user");
+        if (!userRepository.findById(userID).isPresent()) throw new UserNotFoundException(userID);
         else userRepository.deleteById(userID);
     }
 
     public static User unwrapUser(Optional<User> entity, Long userID) {
         if (entity.isPresent()) return entity.get();
-        else throw new UserNotFoundException(userID, "user");
+        else throw new UserNotFoundException(userID);
     }
 
 }

@@ -1,12 +1,15 @@
 package com.mdp.next.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mdp.next.exception.Type;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,16 +28,20 @@ public class Account {
 
     @Column(name = "type", nullable = false)
     @NonNull
+    @Type
     private String type;
 
     @Column(name = "balance", nullable = false)
-    private Double balance;
+    private Double balance = 0.0;
 
-    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
-    private List<Transaction> sentTransactions;
+    // we do not cascade the deletion operation since we want to keep a log of
+    // all transactions handled by the API (***)
+    @OneToMany(mappedBy = "sender")
+    private List<Transaction> sentTransactions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
-    private List<Transaction> receivedTransactions;
+    // same as (***)
+    @OneToMany(mappedBy = "receiver")
+    private List<Transaction> receivedTransactions = new ArrayList<>();
 
     // since accountOwner is excluded by JsonIgnore, explicitly show the account owner user ID for development purposes
     // this field will be removed once testing is done!
