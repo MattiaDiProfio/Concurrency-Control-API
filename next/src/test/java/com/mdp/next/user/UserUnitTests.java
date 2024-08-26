@@ -49,8 +49,8 @@ public class UserUnitTests {
     public void testGetUsers() {
         when(userRepository.findAll()).thenReturn(Arrays.asList(
                 new User("Mattia", "mattia@gmail.com", "1 Fake Road", "mattia123", "password123", "ADMIN"),
-                new User("John", "john@email.com", "2 Common Street", "john456", "password456", "BASE"),
-                new User("Mary", "mary@yahoo.com", "3 Random Avenue", "mary789", "password789", "BASE")
+                new User("John", "john@email.com", "2 Common Street", "john456", "password456", "CUSTOMER"),
+                new User("Mary", "mary@yahoo.com", "3 Random Avenue", "mary789", "password789", "CUSTOMER")
         ));
 
         List<UserDTO> allUsers = userService.getUsers();
