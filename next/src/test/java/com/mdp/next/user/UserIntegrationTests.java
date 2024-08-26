@@ -1,4 +1,4 @@
-package com.mdp.next.security.user;
+package com.mdp.next.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
@@ -69,7 +69,6 @@ public class UserIntegrationTests {
         this.customerJwt = "Bearer " + this.objectMapper.readTree(customerActionJwt).get("token").asText();
         this.adminJwt = "Bearer " + this.objectMapper.readTree(adminActionJwt).get("token").asText();
     }
-
 
     @Test
     @Order(1)

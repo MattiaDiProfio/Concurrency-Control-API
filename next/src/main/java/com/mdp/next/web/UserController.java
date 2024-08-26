@@ -1,7 +1,7 @@
 package com.mdp.next.web;
 
-import com.mdp.next.security.SecurityConstants;
-import com.mdp.next.security.filter.AuthorizationFilter;
+import com.mdp.next.SecurityConstants;
+import com.mdp.next.filter.AuthorizationFilter;
 import org.springframework.http.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;

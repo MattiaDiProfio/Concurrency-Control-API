@@ -1,4 +1,4 @@
-package com.mdp.next.security.user;
+package com.mdp.next.user;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;

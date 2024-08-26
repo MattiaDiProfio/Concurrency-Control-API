@@ -1,4 +1,4 @@
-package com.mdp.next.security.filter;
+package com.mdp.next.filter;
 
 import com.mdp.next.entity.User;
 import com.mdp.next.service.UserService;

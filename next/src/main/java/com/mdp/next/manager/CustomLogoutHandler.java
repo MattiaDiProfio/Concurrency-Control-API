@@ -1,4 +1,4 @@
-package com.mdp.next.security.manager;
+package com.mdp.next.manager;
 
 import com.mdp.next.entity.Token;
 import com.mdp.next.repository.TokenRepository;

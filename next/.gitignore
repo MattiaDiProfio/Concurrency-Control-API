@@ -33,7 +33,7 @@ build/
 .vscode/
 
 ### Security Constants ### 
-src/main/java/com/mdp/next/security/SecurityConstants.java
+src/main/java/com/mdp/next/SecurityConstants.java
 
 ### Config files ###
 src/main/resources/*

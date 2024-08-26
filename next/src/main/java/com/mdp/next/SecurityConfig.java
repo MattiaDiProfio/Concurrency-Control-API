@@ -1,5 +1,9 @@
-package com.mdp.next.security;
+package com.mdp.next;
 
+import com.mdp.next.filter.AuthenticationFilter;
+import com.mdp.next.filter.ExceptionHandlerFilter;
+import com.mdp.next.filter.JWTAuthorizationFilter;
+import com.mdp.next.manager.CustomAuthenticationManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -7,14 +11,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.mdp.next.repository.TokenRepository;
-import com.mdp.next.security.filter.AuthenticationFilter;
-import com.mdp.next.security.filter.JWTAuthorizationFilter;
-import com.mdp.next.security.manager.CustomAuthenticationManager;
 import com.mdp.next.service.UserService;
-import com.mdp.next.security.filter.ExceptionHandlerFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import com.mdp.next.security.manager.CustomLogoutHandler;
+import com.mdp.next.manager.CustomLogoutHandler;
 
 @Configuration
 @AllArgsConstructor

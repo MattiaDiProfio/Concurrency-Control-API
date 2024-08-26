@@ -1,4 +1,4 @@
-package com.mdp.next.security.filter;
+package com.mdp.next.filter;
 
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import java.util.Date;
@@ -10,8 +10,8 @@ import java.io.IOException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mdp.next.security.SecurityConstants;
-import com.mdp.next.security.manager.CustomAuthenticationManager;
+import com.mdp.next.SecurityConstants;
+import com.mdp.next.manager.CustomAuthenticationManager;
 import com.mdp.next.service.UserService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

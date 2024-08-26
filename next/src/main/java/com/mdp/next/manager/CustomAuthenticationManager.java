@@ -1,4 +1,4 @@
-package com.mdp.next.security.manager;
+package com.mdp.next.manager;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;

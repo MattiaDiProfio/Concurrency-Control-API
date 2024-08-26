@@ -1,4 +1,4 @@
-package com.mdp.next.security.filter;
+package com.mdp.next.filter;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -12,7 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.mdp.next.security.SecurityConstants;
+import com.mdp.next.SecurityConstants;
 import com.mdp.next.repository.TokenRepository;
 import com.mdp.next.entity.Token;
 import com.mdp.next.exception.TokenExpiredException;

@@ -1,4 +1,4 @@
-package com.mdp.next.security.filter;
+package com.mdp.next.filter;
 
 import java.io.IOException;
 import jakarta.servlet.FilterChain;
