@@ -63,7 +63,6 @@ public class AccountServiceImpl implements AccountService {
     public void closeAccount(Long userID, Long accountID) {
         // this retrieval ensures that the userID passed is valid, nothing else!
         UserServiceImpl.unwrapUser(userRepository.findById(userID), userID);
-
         Account account = unwrapAccount(accountRepository.findById(accountID), userID, accountID);
         accountRepository.delete(account);
     }
