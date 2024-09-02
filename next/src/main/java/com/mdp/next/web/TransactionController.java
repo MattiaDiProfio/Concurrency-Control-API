@@ -16,15 +16,11 @@ import java.util.List;
 
 public class TransactionController {
 
-    private final UserService userService;
-    private final AccountService accountService;
     private final TransactionService transactionService;
     private final AuthorizationFilter authorizationFilter;
 
-    public TransactionController(TransactionServiceImpl transactionService, AccountServiceImpl accountService, UserServiceImpl userService) {
-        this.accountService = accountService;
+    public TransactionController(TransactionServiceImpl transactionService, UserServiceImpl userService) {
         this.transactionService = transactionService;
-        this.userService = userService;
         this.authorizationFilter = new AuthorizationFilter(userService);
     }
 
