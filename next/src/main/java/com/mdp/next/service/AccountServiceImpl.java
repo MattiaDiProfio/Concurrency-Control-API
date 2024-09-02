@@ -47,6 +47,9 @@ public class AccountServiceImpl implements AccountService {
             if (acc.getType().equals(account.getType())) throw new DuplicateAccountException(userID, account.getType());
         }
 
+        // give every account a default amount of 100
+        account.setBalance(100.00);
+
         // link the user to this account
         account.setAccountOwner(user);
         account.setAccountOwnerId(user.getUserId());

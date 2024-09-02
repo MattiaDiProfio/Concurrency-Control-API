@@ -3,7 +3,8 @@
 POST /user/:userId/accounts
 
 Open an account given that the user sending the request is the profile owner 
-and that the type of account to be opened doesn't exist already. 
+and that the type of account to be opened doesn't exist already.
+**Note** - each account automatically opens with 100.00, this could be though of as a "signup bonus".
 
 * URL `/user/:userId/accounts`
 * Method : `POST`

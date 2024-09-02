@@ -32,7 +32,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
     // thrown when a get request tries to find a non-existing object
     @ExceptionHandler({LogoutBeforeLoginException.class})
     public ResponseEntity<Object> handleAuthException(RuntimeException ex) {
-        ErrorResponse error = new ErrorResponse(Arrays.asList(ex.getMessage()));  
+        ErrorResponse error = new ErrorResponse(Arrays.asList(ex.getMessage()));
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
@@ -45,13 +45,19 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
     // triggered by unsuccessfull user deletion operation
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<Object> handleDataAccessException(EmptyResultDataAccessException ex) {
-        ErrorResponse error = new ErrorResponse(Arrays.asList("Cannot delete non-existing resource"));  
+        ErrorResponse error = new ErrorResponse(List.of("Cannot delete non-existing resource"));
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
-        ErrorResponse error = new ErrorResponse(Arrays.asList("Please double check the type of method arguments passed in - i.e. path variable ID should be a valid integer."));  
+        ErrorResponse error = new ErrorResponse(List.of("Please double check the type of method arguments passed in - i.e. path variable ID should be a valid integer."));
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidTransactionException.class)
+    public ResponseEntity<Object> handleInvalidTransactionPayloadException(InvalidTransactionException ex) {
+        ErrorResponse error = new ErrorResponse(Arrays.asList(ex.getMessage()));
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 

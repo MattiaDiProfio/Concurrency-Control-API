@@ -31,7 +31,6 @@ public class Transaction {
     // since the transaction's sender and receiver are excluded by the JsonIgnore
     // explicitly show the accountId of the sender and receiver, this will be removed
     // once testing is completed!
-    @NonNull
     @Column(name = "sender_account_id", nullable = false)
     private Long senderAccountId;
 

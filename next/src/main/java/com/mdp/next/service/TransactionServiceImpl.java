@@ -8,8 +8,9 @@ import com.mdp.next.repository.TransactionRepository;
 import com.mdp.next.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import com.mdp.next.exception.InvalidTransactionException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -45,14 +46,35 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public void placeTransaction(Transaction transaction, Long userID, Long accountID) {
 
-        // extract the amount and accounts involved in the transaction
+        // fetching the sender & receiver accounts automatically checks for their existence as well
+        Account senderAccount = AccountServiceImpl.unwrapAccount(accountRepository.findById(accountID), userID, accountID);
+        Optional<Account> acc = accountRepository.findById(transaction.getReceiverAccountId());
+        Account receiverAccount;
+        if (acc.isPresent()) receiverAccount = acc.get();
+        else throw new InvalidTransactionException(String.format("The receiver account with id %s does not exist in our records", transaction.getReceiverAccountId()));
 
-        // check the validity of the transaction
-        // we can do the following checks in the service layer!
-        // namely, the amount specified is > 0.0
-        // the account and sender cannot be the same, and they must both be valid (existing)
-        // the sender account must have enough funds to cover the transaction
-        // in the service layer, trigger the OCC algorithm
+        // ensure that the sender and receiver are not the same account
+        if (senderAccount.getAccountId().equals(receiverAccount.getAccountId())) throw new InvalidTransactionException("Sender and Receiver accounts must be different");
 
+        // ensure that the sender account has enough funds to cover the transaction
+        if (senderAccount.getBalance() < transaction.getAmount()) throw new InvalidTransactionException("Insufficient balance to place transaction");
+
+        // ensure that the amount is at least 0.01
+        if (transaction.getAmount() <= 0.00) throw new InvalidTransactionException("Amount cannot be less than 0.01");
+
+        // at this stage, the transaction payload is valid
+
+        // we place the transaction (without OCC for now) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+        transaction.setSender(senderAccount);
+        transaction.setReceiver(receiverAccount);
+        transaction.setSenderAccountId(senderAccount.getAccountId());
+        transaction.setReceiverAccountId(receiverAccount.getAccountId());
+
+        senderAccount.setBalance(senderAccount.getBalance() - transaction.getAmount());
+        receiverAccount.setBalance(receiverAccount.getBalance() + transaction.getAmount());
+
+        // TODO >>>>>>>>>>>>>>>>>> check that the transaction appears in the .../sent and .../received arrays, otherwise we gotta set them manually!
+        transactionRepository.save(transaction);
     }
 }
