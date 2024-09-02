@@ -1,22 +1,21 @@
-# Concurrency API Developer Notes
+# OCC API 
+This project consists of a RESTful API built using the Spring framework. Through the endpoints listed below, users can manage their profiles and acconunts, as well as send and receive money through transactions. The main focus of this project has been implementing a robust JWT-based authentication & authorization mechansim and ensuring high concurrency by checking for validity of transactions with the OCC algorithm provided.
 
-## API Components Overview
+## API Architecture & Components Overview
 
-### Database Schema
+#### Database Schema
 ![](next/markdown/media/db.png)
 
-### Transaction Entity
+#### Transaction Entity
 ![](next/markdown/media/transaction.png)
 
-## API Architecture Overview
-
-### Model-View-Controller Architecture
+#### Model-View-Controller Architecture
 ![](next/markdown/media/mvc.png)
 
-### Security Architecture
+#### Security Architecture
 ![](next/markdown/media/security.png)
 
-### Optimistic Concurrency Control Algorithm
+#### Optimistic Concurrency Control Algorithm
 ![](next/markdown/media/algorithm.png)
 
 ## API Endpoints Overview
