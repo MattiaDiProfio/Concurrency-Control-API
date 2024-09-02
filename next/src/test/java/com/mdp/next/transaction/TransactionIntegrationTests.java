@@ -1,6 +1,9 @@
 package com.mdp.next.transaction;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.test.web.servlet.MvcResult;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -8,13 +11,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -134,13 +138,65 @@ public class TransactionIntegrationTests {
         mockMvc.perform(request).andExpect(status().isBadRequest()).andExpect(result -> result.getResolvedException().getMessage().equals("Amount cannot be less than 0.01"));;
     }
 
+    @Test
+    @Order(8)
+    // we try and simulate OCC dirty-read and lost-update and check that the OCC algorithm handles them properly
+    public void testPlaceTransactionOk() throws Exception {
 
-    /*
-    *
-    * === occ algorithm tests === we assert that the total amount of money in the DB is the same before n after
-    * 1. scenario 1 (no failure) - a sends 1.0 => b, a sends 1.0 => c concurrently. after these two, c sends 10.0 => b
-    * 2. scenario 2 (failure due to dirty read) - a sends 1.0 => b, b sends 2.0 => c
-    * 3. scenario 3 (failure due to lost update) - a sends 1.0 => b and c sends 1.0 => b
-    * */
+        // starting state
+        assertEquals(300.00, getTotal());
+
+        List<RequestBuilder> requests = List.of(
+            // b -> c -> d : dirty-read
+            MockMvcRequestBuilders.post("/user/2/accounts/1/place").contentType(MediaType.APPLICATION_JSON).header("Authorization", this.Bjwt).content("{ \"amount\": \"10.0\",  \"receiverAccountId\": \"3\" }"),
+            MockMvcRequestBuilders.post("/user/3/accounts/2/place").contentType(MediaType.APPLICATION_JSON).header("Authorization", this.Bjwt).content("{ \"amount\": \"10.0\",  \"receiverAccountId\": \"4\" }"),
+            // b -> c <- d : lost-update
+            MockMvcRequestBuilders.post("/user/2/accounts/1/place").contentType(MediaType.APPLICATION_JSON).header("Authorization", this.Bjwt).content("{ \"amount\": \"10.0\",  \"receiverAccountId\": \"3\" }"),
+            MockMvcRequestBuilders.post("/user/4/accounts/3/place").contentType(MediaType.APPLICATION_JSON).header("Authorization", this.Bjwt).content("{ \"amount\": \"10.0\",  \"receiverAccountId\": \"3\" }")
+        );
+
+        // simultaneously place all transactions
+        CountDownLatch latch = new CountDownLatch(1);
+        for (RequestBuilder request : requests) {
+            Thread thread = new Thread(() -> {
+                try {
+                    latch.await(); // Wait for the latch to reach 0
+                    mockMvc.perform(request);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            thread.start();
+        }
+        latch.countDown();
+
+        // after concurrent transactions
+        assertEquals(300.00, getTotal());
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/user/4/accounts/3/place").contentType(MediaType.APPLICATION_JSON).header("Authorization", this.Djwt).content("{ \"amount\": \"10.0\",  \"receiverAccountId\": \"2\" }"));
+        // after 1 independent transaction
+
+        assertEquals(300.00, getTotal());
+
+    }
+
+
+    public double getTotal() throws Exception {
+        double total = 0;
+
+        MvcResult result;
+
+        result = mockMvc.perform(MockMvcRequestBuilders.get("/user/2/accounts/1").header("Authorization", this.Ajwt)).andExpect(status().isOk()).andReturn();
+        total += objectMapper.readTree(result.getResponse().getContentAsString()).get("balance").asDouble();
+
+        result = mockMvc.perform(MockMvcRequestBuilders.get("/user/3/accounts/2").header("Authorization", this.Ajwt)).andExpect(status().isOk()).andReturn();;
+        total += objectMapper.readTree(result.getResponse().getContentAsString()).get("balance").asDouble();
+
+        result = mockMvc.perform(MockMvcRequestBuilders.get("/user/4/accounts/3").header("Authorization", this.Ajwt)).andExpect(status().isOk()).andReturn();;
+        total += objectMapper.readTree(result.getResponse().getContentAsString()).get("balance").asDouble();
+
+        return total;
+    }
+
 
 }

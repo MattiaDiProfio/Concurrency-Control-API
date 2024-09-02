@@ -24,8 +24,8 @@ public class TransactionUnitTests {
     @Test
     public void testComesBeforeMethod() {
         assertTrue(transactionService.comesBefore("2024-01-01 10:00:00", "2024-01-02 10:00:00"));
-        assertTrue(transactionService.comesBefore(null, "2024-01-02 10:00:00"));
-        assertTrue(transactionService.comesBefore("2024-01-01 10:00:00", null));
+        assertFalse(transactionService.comesBefore(null, "2024-01-02 10:00:00"));
+        assertFalse(transactionService.comesBefore("2024-01-01 10:00:00", null));
         assertFalse(transactionService.comesBefore("2024-01-01 10:00:00", "2024-01-01 09:59:59"));
         assertFalse(transactionService.comesBefore("2024-01-02 10:00:00", "2024-01-01 10:00:00"));
     }

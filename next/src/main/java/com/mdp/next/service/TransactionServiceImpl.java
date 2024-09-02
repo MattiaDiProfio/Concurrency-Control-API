@@ -18,6 +18,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
 
+    private static long validationIDcounter = 0;
+
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
@@ -71,27 +73,20 @@ public class TransactionServiceImpl implements TransactionService {
         // 1. assign the transaction start-timestamp
         transaction.setTransactionStartTimeStamp(timestampNow());
 
-        // 2. define tentative copies of the write objects
-        Account tentativeSender = new Account(senderAccount);
-        Account tentativeReceiver = new Account(receiverAccount);
-
         // 3. define the Read and Write sets for this transaction
         transaction.setReadSet(List.of(senderAccount, receiverAccount));
-        transaction.setWriteSet(List.of(tentativeSender, tentativeReceiver));
-
-        // 4. carry out transaction's operations
-        tentativeSender.setBalance(tentativeSender.getBalance() - transaction.getAmount());
-        tentativeReceiver.setBalance(tentativeReceiver.getBalance() + transaction.getAmount());
+        transaction.setWriteSet(List.of(senderAccount, receiverAccount));
 
         // 5. assign timestamp to mark the end of the read(working) phase
         transaction.setTransactionEndWorkingPhaseTimeStamp(timestampNow());
 
-        // 6. assign validation ID - set it as the transactionID , since this guarantees uniqueness
-        transaction.setValidationId(transaction.getTransactionId());
+        // 6. assign validation ID
+        transaction.setValidationId(TransactionServiceImpl.validationIDcounter);
+        TransactionServiceImpl.validationIDcounter += 1;
 
         // 7. carry out validation on current transaction, name it Tj
         List<Transaction> relevantSet = transactionRepository.getRelevantSet(transaction.getValidationId());
-        boolean canCommit = true;
+
 
         // for each transaction in the relevant set, we check that either
         // (a) it ended before Tj begun
@@ -99,27 +94,15 @@ public class TransactionServiceImpl implements TransactionService {
         // (c) there is no risk of dirty-read (transactions basing calculations on outdated data)
         // if either a, b, or c are true for any given Ti, we can commit, otherwise we abort Tj
         for (Transaction Ti : relevantSet) {
-            boolean noOverlap = false;
-            boolean noDirtyRead = false;
-            boolean noLostUpdate = false;
+            boolean noOverlap = comesBefore(Ti.getTransactionEndTimeStamp(), transaction.getTransactionStartTimeStamp());
+            boolean noDirtyRead = Ti.getReadSet().stream().noneMatch(transaction.getWriteSet()::contains);
+            boolean noLostUpdate = Ti.getWriteSet().stream().noneMatch(transaction.getReadSet()::contains) &&
+                    Ti.getWriteSet().stream().noneMatch(transaction.getWriteSet()::contains) &&
+                    comesBefore(Ti.getTransactionEndWorkingPhaseTimeStamp(), transaction.getTransactionEndWorkingPhaseTimeStamp());
 
-            // no point in checking, since the transactions don't overlap
-            if (comesBefore(Ti.getTransactionEndTimeStamp(), transaction.getTransactionStartTimeStamp())) noOverlap = true;
-
-            // check for dirty read
-            if (Ti.getReadSet().stream().noneMatch(transaction.getReadSet()::contains)) noDirtyRead = true;
-
-            // check for lost update
-            List<Account> union = transaction.getWriteSet();
-            union.addAll(transaction.getReadSet());
-            if (
-                Ti.getWriteSet().stream().noneMatch(union::contains) &&
-                comesBefore(Ti.getTransactionEndWorkingPhaseTimeStamp(), transaction.getTransactionEndWorkingPhaseTimeStamp())
-            ) noLostUpdate = true;
-
-            if (!noOverlap || (!noDirtyRead || !noLostUpdate)) {
-                // we must abort the transaction
-                throw new InvalidTransactionException("We could not place the transaction, OCC failed");
+            if (!(noOverlap || (noDirtyRead && noLostUpdate))) {
+                // If the transaction fails any of these conditions, it must be aborted
+                throw new InvalidTransactionException("We could not place the transaction, OCC failed due to a concurrency conflict.");
             }
         }
 
@@ -128,8 +111,8 @@ public class TransactionServiceImpl implements TransactionService {
         // at this stage, the transaction is ok to be committed
 
         // 1. we make the changes to the accounts persistent
-        senderAccount.updateTo(tentativeSender);
-        receiverAccount.updateTo(tentativeReceiver);
+        senderAccount.setBalance(senderAccount.getBalance() - transaction.getAmount());
+        receiverAccount.setBalance(receiverAccount.getBalance() + transaction.getAmount());
 
         // 2. we link the transaction and the accounts involved
         transaction.setSender(senderAccount);
@@ -146,11 +129,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     public boolean comesBefore(String t1, String t2) {
-        // if either string is null, we assume the timestamp to be in the future, so return true
-        if (t1 == null || t2 == null) return true;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime a = LocalDateTime.parse(t1, formatter);
-        LocalDateTime b = LocalDateTime.parse(t2, formatter);
-        return a.isBefore(b);
+        return t1 != null && t2 != null && LocalDateTime.parse(t1, formatter).isBefore(LocalDateTime.parse(t2, formatter));
     }
 }
