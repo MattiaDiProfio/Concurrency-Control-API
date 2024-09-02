@@ -136,21 +136,6 @@ public class TransactionIntegrationTests {
 
 
     /*
-    * setup
-    * - 3 users, 1 admin and 3 customers
-    * - open an account per customer, and place a transaction of 5 from a -> b and one of 10 from b -> a, and 20 from c -> a
-    *
-    * scenarios to test
-    * === authorization tests ===
-    * 1. the admin tries to access all the transactions - success
-    * 2. user a tries to access all of b's sent transactions - fails
-    * 3. user b tries to access all of b's received transactions - success
-    * 4. the admin tries to access all of c's sent transactions - success
-    *
-    * === place transaction tests (mainly validation) ===
-    * - transaction amount too large for sender
-    * - sender and receiver are equal
-    * - transaction amount is <= 0
     *
     * === occ algorithm tests === we assert that the total amount of money in the DB is the same before n after
     * 1. scenario 1 (no failure) - a sends 1.0 => b, a sends 1.0 => c concurrently. after these two, c sends 10.0 => b
