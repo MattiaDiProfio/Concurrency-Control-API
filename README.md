@@ -1,13 +1,13 @@
 # Concurrency API Developer Notes
 
 ### API Entities Overview
-[](next/markdown/media/db.png)
-[](next/markdown/media/transaction.png)
+![](next/markdown/media/db.png)
+![](next/markdown/media/transaction.png)
 
 ### API Architecture Overview
-[](next/markdown/media/mvc.png)
-[](next/markdown/media/security.png)
-[](next/markdown/media/algorithm.png)
+![](next/markdown/media/mvc.png)
+![](next/markdown/media/security.png)
+![](next/markdown/media/algorithm.png)
 
 ### API Endpoints Overview
 
