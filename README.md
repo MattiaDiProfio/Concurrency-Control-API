@@ -1,5 +1,5 @@
 # OCC API 
-This project consists of a RESTful API built using the Spring framework. Through the endpoints listed below, users can manage their profiles and acconunts, as well as send and receive money through transactions. The main focus of this project has been implementing a robust JWT-based authentication & authorization mechansim and ensuring high concurrency by checking for validity of transactions with the OCC algorithm provided.
+This project consists of a RESTful API built using the Spring framework. Through the endpoints listed below, users can manage their profiles and accounts, as well as send and receive money through transactions. The main focus of this project has been implementing a robust JWT-based authentication & authorization mechansim and ensuring high concurrency by checking for validity of transactions with the OCC algorithm provided.
 
 ## API Architecture & Components Overview
 
