@@ -1,12 +1,22 @@
 # Concurrency API Developer Notes
 
-### API Entities Overview
+### API Components Overview
+
+## Database Schema
 ![](next/markdown/media/db.png)
+
+## Transaction Entity
 ![](next/markdown/media/transaction.png)
 
 ### API Architecture Overview
+
+## Model-View-Controller Architecture
 ![](next/markdown/media/mvc.png)
+
+## Security Architecture
 ![](next/markdown/media/security.png)
+
+## Optimistic Concurrency Control Algorithm
 ![](next/markdown/media/algorithm.png)
 
 ### API Endpoints Overview
