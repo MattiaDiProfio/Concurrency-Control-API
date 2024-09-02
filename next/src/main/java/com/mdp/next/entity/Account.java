@@ -21,6 +21,27 @@ import java.util.List;
 @Table(name = "accounts")
 public class Account {
 
+    // copy constructor
+    public Account (Account account) {
+        setAccountId(account.getAccountId());
+        setType(account.getType());
+        setBalance(account.getBalance());
+        setSentTransactions(account.getSentTransactions());
+        setReceivedTransactions(account.getReceivedTransactions());
+        setAccountOwnerId(account.getAccountOwnerId());
+        setAccountOwner(account.getAccountOwner());
+    }
+
+    public void updateTo(Account account) {
+        setAccountId(account.getAccountId());
+        setType(account.getType());
+        setBalance(account.getBalance());
+        setSentTransactions(account.getSentTransactions());
+        setReceivedTransactions(account.getReceivedTransactions());
+        setAccountOwnerId(account.getAccountOwnerId());
+        setAccountOwner(account.getAccountOwner());
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "account_id")

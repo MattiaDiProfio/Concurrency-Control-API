@@ -9,6 +9,9 @@ import com.mdp.next.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.mdp.next.exception.InvalidTransactionException;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,17 +67,91 @@ public class TransactionServiceImpl implements TransactionService {
 
         // at this stage, the transaction payload is valid
 
-        // we place the transaction (without OCC for now) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        // OCC algorithm >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+        // 1. assign the transaction start-timestamp
+        transaction.setTransactionStartTimeStamp(timestampNow());
+
+        // 2. define tentative copies of the write objects
+        Account tentativeSender = new Account(senderAccount);
+        Account tentativeReceiver = new Account(receiverAccount);
+
+        // 3. define the Read and Write sets for this transaction
+        transaction.setReadSet(List.of(senderAccount, receiverAccount));
+        transaction.setWriteSet(List.of(tentativeSender, tentativeReceiver));
+
+        // 4. carry out transaction's operations
+        tentativeSender.setBalance(tentativeSender.getBalance() - transaction.getAmount());
+        tentativeReceiver.setBalance(tentativeReceiver.getBalance() + transaction.getAmount());
+
+        // 5. assign timestamp to mark the end of the read(working) phase
+        transaction.setTransactionEndWorkingPhaseTimeStamp(timestampNow());
+
+        // 6. assign validation ID - set it as the transactionID , since this guarantees uniqueness
+        transaction.setValidationId(transaction.getTransactionId());
+
+        // 7. carry out validation on current transaction, name it Tj
+        List<Transaction> relevantSet = transactionRepository.getRelevantSet(transaction.getValidationId());
+        boolean canCommit = true;
+
+        // for each transaction in the relevant set, we check that either
+        // (a) it ended before Tj begun
+        // (b) there is no risk of lost-update (transactions overwriting each other)
+        // (c) there is no risk of dirty-read (transactions basing calculations on outdated data)
+        // if either a, b, or c are true for any given Ti, we can commit, otherwise we abort Tj
+        for (Transaction Ti : relevantSet) {
+            boolean noOverlap = false;
+            boolean noDirtyRead = false;
+            boolean noLostUpdate = false;
+
+            // no point in checking, since the transactions don't overlap
+            if (comesBefore(Ti.getTransactionEndTimeStamp(), transaction.getTransactionStartTimeStamp())) noOverlap = true;
+
+            // check for dirty read
+            if (Ti.getReadSet().stream().noneMatch(transaction.getReadSet()::contains)) noDirtyRead = true;
+
+            // check for lost update
+            List<Account> union = transaction.getWriteSet();
+            union.addAll(transaction.getReadSet());
+            if (
+                Ti.getWriteSet().stream().noneMatch(union::contains) &&
+                comesBefore(Ti.getTransactionEndWorkingPhaseTimeStamp(), transaction.getTransactionEndWorkingPhaseTimeStamp())
+            ) noLostUpdate = true;
+
+            if (!noOverlap || (!noDirtyRead || !noLostUpdate)) {
+                // we must abort the transaction
+                throw new InvalidTransactionException("We could not place the transaction, OCC failed");
+            }
+        }
+
+        transaction.setTransactionEndValidationPhaseTimeStamp(timestampNow());
+
+        // at this stage, the transaction is ok to be committed
+
+        // 1. we make the changes to the accounts persistent
+        senderAccount.updateTo(tentativeSender);
+        receiverAccount.updateTo(tentativeReceiver);
+
+        // 2. we link the transaction and the accounts involved
         transaction.setSender(senderAccount);
         transaction.setReceiver(receiverAccount);
         transaction.setSenderAccountId(senderAccount.getAccountId());
         transaction.setReceiverAccountId(receiverAccount.getAccountId());
 
-        senderAccount.setBalance(senderAccount.getBalance() - transaction.getAmount());
-        receiverAccount.setBalance(receiverAccount.getBalance() + transaction.getAmount());
-
-        // TODO >>>>>>>>>>>>>>>>>> check that the transaction appears in the .../sent and .../received arrays, otherwise we gotta set them manually!
+        transaction.setTransactionEndTimeStamp(timestampNow());
         transactionRepository.save(transaction);
+    }
+
+    public String timestampNow() {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    public boolean comesBefore(String t1, String t2) {
+        // if either string is null, we assume the timestamp to be in the future, so return true
+        if (t1 == null || t2 == null) return true;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime a = LocalDateTime.parse(t1, formatter);
+        LocalDateTime b = LocalDateTime.parse(t2, formatter);
+        return a.isBefore(b);
     }
 }

@@ -55,19 +55,19 @@ public class Transaction {
 
     @Column(name = "starttime")
     @JsonIgnore
-    private LocalDateTime transactionStartTimeStamp;
+    private String transactionStartTimeStamp;
 
     @Column(name = "working_phase_endtime")
     @JsonIgnore
-    private LocalDateTime transactionEndWorkingPhaseTimeStamp;
+    private String transactionEndWorkingPhaseTimeStamp;
 
     @Column(name = "validation_phase_endtime")
     @JsonIgnore
-    private LocalDateTime transactionEndValidationPhaseTimeStamp;
+    private String transactionEndValidationPhaseTimeStamp;
 
     @Column(name = "endtime")
     @JsonIgnore
-    private LocalDateTime transactionEndTimeStamp;
+    private String transactionEndTimeStamp;
 
     @JsonIgnore
     @ManyToMany
