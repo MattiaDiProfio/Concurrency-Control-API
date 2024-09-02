@@ -36,7 +36,7 @@ accounts, and transactions.
 
 * [View Account's Sent Transactions](next/markdown/account/viewAccountSentTransactions.md) : `GET /user/:userId/accounts/:accountId/sent`
 * [View Account's Received Transactions](next/markdown/account/viewAccountReceivedTransactions.md) : `GET /user/:userId/accounts/:accountId/received`
-* [Place Transaction](next/markdown/transaction/placeTransaction.md) : `POST /transaction`
+* [Place Transaction](next/markdown/transaction/placeTransaction.md) : `POST /user/:userId/accounts/:accountId/place`
 
 #### Super User (Admin) Endpoints
 
