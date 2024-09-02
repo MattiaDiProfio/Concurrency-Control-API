@@ -4,14 +4,13 @@ Given that the logged-in user owns the sending account, this endpoint allows
 them to transfer money to any other open account, as long as they have enough funds to cover
 the transactions, alongside other restrictions.
 
-* URL `/transaction`
+* URL `/user/{userID}/accounts/{accountID}/place`
 * Method : `POST`
 * Auth required : **YES**
 * Request Structure
 ```json
 {
   "amount" : 3.99,
-  "senderAccountId" : 2,
   "receiverAccountId" : 5
 }
 ```

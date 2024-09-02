@@ -43,7 +43,16 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public void placeTransaction(Transaction transaction) {
+    public void placeTransaction(Transaction transaction, Long userID, Long accountID) {
+
+        // extract the amount and accounts involved in the transaction
+
+        // check the validity of the transaction
+        // we can do the following checks in the service layer!
+        // namely, the amount specified is > 0.0
+        // the account and sender cannot be the same, and they must both be valid (existing)
+        // the sender account must have enough funds to cover the transaction
+        // in the service layer, trigger the OCC algorithm
 
     }
 }

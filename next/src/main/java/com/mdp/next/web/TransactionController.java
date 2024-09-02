@@ -48,15 +48,12 @@ public class TransactionController {
         return new ResponseEntity<>(transactionService.getAllTransactions(), HttpStatus.OK);
     }
 
-    @PostMapping("/transaction")
-    public ResponseEntity<?> placeTransaction(@Valid @RequestBody Transaction transaction) {
-        // define a custom annotation to check that the transaction is valid
-        // we can do the following checks in the service layer!
-        // namely, the amount specified is > 0.0
-        // the account and sender cannot be the same, and they must both be valid (existing)
-        // the sender account must have enough funds to cover the transaction
-        // in the service layer, trigger the OCC algorithm
-        return null;
+    @PostMapping("/user/{userID}/accounts/{accountID}/place")
+    public ResponseEntity<?> placeTransaction(@RequestBody Transaction transaction, @PathVariable Long userID, @PathVariable Long accountID) {
+        if (authorizationFilter.isAdmin()) throw new UnauthorizedAccessException(SecurityConstants.NON_ADMIN_ONLY);
+        if (!authorizationFilter.isOwner(userID)) throw new UnauthorizedAccessException(SecurityConstants.ACCOUNT_OWNER_ONLY);
+        transactionService.placeTransaction(transaction, userID, accountID);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

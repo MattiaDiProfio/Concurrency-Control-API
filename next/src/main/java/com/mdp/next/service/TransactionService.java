@@ -9,6 +9,6 @@ public interface TransactionService {
     List<Transaction> getSentTransactions(Long userID, Long accountID);
     List<Transaction> getReceivedTransactions(Long userID, Long accountID);
     List<Transaction> getAllTransactions();
-    void placeTransaction(Transaction transaction);
+    void placeTransaction(Transaction transaction, Long userID, Long accountID);
 
 }
