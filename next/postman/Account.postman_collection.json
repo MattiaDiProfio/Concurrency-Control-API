@@ -1,0 +1,160 @@
+{
+	"info": {
+		"_postman_id": "1e1c2673-35ea-47af-bb1e-6a743a4d36d5",
+		"name": "Account",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29931055"
+	},
+	"item": [
+		{
+			"name": "Get User's Accounts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYXR0aWEiLCJleHAiOjE3MjQ2OTA0MjN9.IJKy14Q3dFsAVuEpG5OmsZ_hWggJR7w9-BwLsPLwDPfZM2hbvo56z141mnLrinZDo4wfhsRI-WkKQEcLzY2WwA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/user/1/accounts",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"1",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User's Account",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYXR0aWEiLCJleHAiOjE3MjQ2OTA0MjN9.IJKy14Q3dFsAVuEpG5OmsZ_hWggJR7w9-BwLsPLwDPfZM2hbvo56z141mnLrinZDo4wfhsRI-WkKQEcLzY2WwA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/user/1/accounts/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"1",
+						"accounts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Accounts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYXR0aWEiLCJleHAiOjE3MjQ2ODkyMjV9.bxStUeSYKEzgX19XnT6z4vx8nzG7QcQzIo_PNCTf2pKE_cxXCsfoLTeSRDq-cLfmOH3Pu_1Vq8WTL2S6MQupog",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/account/all",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Open Account",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYXR0aWEiLCJleHAiOjE3MjQ2OTA5MzV9.CUqv0W4I2hA2h9N4UGp3LeD1qSZTBJCc_qylRrsuzcF1WH-jmHdAAMk4_AL8LbFsLTJahUGgJ4GR5w1cY_3fPw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"type\" : \"SAVINGS\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/user/1/accounts",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"1",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Close Account",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/user/1/accounts/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"1",
+						"accounts",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

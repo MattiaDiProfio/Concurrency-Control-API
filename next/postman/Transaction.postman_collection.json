@@ -1,0 +1,114 @@
+{
+	"info": {
+		"_postman_id": "a3c1ab79-be5b-4fa8-b29a-a1deacea924f",
+		"name": "Transaction",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29931055"
+	},
+	"item": [
+		{
+			"name": "Get Account's Sent Transactions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/user/1/accounts/1/sent",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"1",
+						"accounts",
+						"1",
+						"sent"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Account's Received Transactions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/user/1/accounts/1/received",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"1",
+						"accounts",
+						"1",
+						"received"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Transactions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/transaction/all",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transaction",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Place Transaction",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYXR0aWEiLCJleHAiOjE3MjUyNzA3NTB9.2sVq9s-vn5smK3m_UzJjWW41hnMbMl_kfDIEEBE1oxpCoGQD589OFee9v9lTAYv93yZu0sZKxoQtpWimEXUZwQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\" : 12.00,\r\n    \"receiverAccountId\" : 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/user/1/accounts/1/place",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user",
+						"1",
+						"accounts",
+						"1",
+						"place"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
