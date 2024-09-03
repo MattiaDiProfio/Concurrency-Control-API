@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 // the purpose of this class is to act as a User class replacement for user objects to be 
 // sent back in response bodies, for example in GET/users/all and GET/user/userID.
-// by using this class, we can pick the fields we want to omit from the response, in this case the hashed password
-// note that we fetching accounts, transactions, etc. only the user ID is serialised into the response, so there 
+// by using this class, we can pick the fields we want to omit from the response
+// note that when fetching accounts, transactions, etc. only the user ID is serialised into the response, so there
 // is no need to use a DTO in such cases.
 
 @Getter

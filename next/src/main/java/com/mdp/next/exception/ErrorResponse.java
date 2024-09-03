@@ -2,10 +2,9 @@ package com.mdp.next.exception;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class ErrorResponse {
+public final class ErrorResponse {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime timestamp;

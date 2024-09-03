@@ -8,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,27 +20,6 @@ import java.util.List;
 @Table(name = "accounts")
 public class Account {
 
-    // copy constructor
-    public Account (Account account) {
-        setAccountId(account.getAccountId());
-        setType(account.getType());
-        setBalance(account.getBalance());
-        setSentTransactions(account.getSentTransactions());
-        setReceivedTransactions(account.getReceivedTransactions());
-        setAccountOwnerId(account.getAccountOwnerId());
-        setAccountOwner(account.getAccountOwner());
-    }
-
-    public void updateTo(Account account) {
-        setAccountId(account.getAccountId());
-        setType(account.getType());
-        setBalance(account.getBalance());
-        setSentTransactions(account.getSentTransactions());
-        setReceivedTransactions(account.getReceivedTransactions());
-        setAccountOwnerId(account.getAccountOwnerId());
-        setAccountOwner(account.getAccountOwner());
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "account_id")
@@ -49,7 +27,7 @@ public class Account {
 
     @Column(name = "type", nullable = false)
     @NonNull
-    @Type
+    @Type // use the custom-defined 'Type' annotation
     private String type;
 
     @Column(name = "balance", nullable = false)
@@ -65,7 +43,6 @@ public class Account {
     private List<Transaction> receivedTransactions = new ArrayList<>();
 
     // since accountOwner is excluded by JsonIgnore, explicitly show the account owner user ID for development purposes
-    // this field will be removed once testing is done!
     @Column(name = "account_owner_id")
     private Long accountOwnerId;
 

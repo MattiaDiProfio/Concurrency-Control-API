@@ -8,7 +8,6 @@ import lombok.*;
 import jakarta.persistence.*;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -29,8 +28,7 @@ public class Transaction {
     private Double amount;
 
     // since the transaction's sender and receiver are excluded by the JsonIgnore
-    // explicitly show the accountId of the sender and receiver, this will be removed
-    // once testing is completed!
+    // explicitly show the accountId of the sender and receiver
     @Column(name = "sender_account_id", nullable = false)
     private Long senderAccountId;
 
