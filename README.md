@@ -7,12 +7,23 @@ This project consists of a RESTful API built using the Spring framework. Through
 ![](next/markdown/media/db.png)
 
 #### Model-View-Controller Architecture
+The architecture chosen for this project is a standard 3-tier MVC, with an implict cross-cutting security layer. Within this setup, the user-facing layer (View) is responsible for receiving requests and validates the authority of the requesting user by invoking the Authorization Filter. Once authorized, the request is delegated to the Service layer, where the Controller interacts with the Model to perform the requested actions on the database. 
+
 ![](next/markdown/media/mvc.png)
 
 #### Security Architecture
+The Securirty Layer has been designed around JSON-Web-Token (JWT) authentication, and role-based authrorization. Every request apart for the registration & login are protected, and once logged in a user must possess the required level of authority to access certain resources. For example, admins can GET all resources but cannot edit or delete a resource which they do not own.
+
 ![](next/markdown/media/security.png)
 
 #### Transaction Entity
+
+To allow for the Optimistic-Concurrency-Control algorithm to operate properly, Transactions must provide a mix of user-facing data, such as amount, sender & receiver, as well as a set of attributes used during the validation phase, such as timestamps of when the transaction entered/exited each phase, working sets, and the validationID required to compute the Relevant Set during the Validation Phase.
+The Transaction object is divided into three phases : 
+- Working/Read Phase : the transaction instantiates local copies of objects it writes to, and defines its Read & Write sets. Additionally, the transaction performs the desired action on its local copies.
+- Validation Phase : the transaction is validated against any other transaction which may cause concurrency issues, such as *lost-updates* or *dirty-reads*. Refer to the OCC Algorithm diagram below.
+- Commit/Abort Phase : depending on the outcome of the previous phase, the transaction either makes its changes persistent or rolls-back to the previous state
+
 ![](next/markdown/media/transaction.png)
 
 #### Optimistic Concurrency Control Algorithm
