@@ -6,14 +6,14 @@ This project consists of a RESTful API built using the Spring framework. Through
 #### Database Schema
 ![](next/markdown/media/db.png)
 
-#### Transaction Entity
-![](next/markdown/media/transaction.png)
-
 #### Model-View-Controller Architecture
 ![](next/markdown/media/mvc.png)
 
 #### Security Architecture
 ![](next/markdown/media/security.png)
+
+#### Transaction Entity
+![](next/markdown/media/transaction.png)
 
 #### Optimistic Concurrency Control Algorithm
 ![](next/markdown/media/algorithm.png)
