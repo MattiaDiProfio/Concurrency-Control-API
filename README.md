@@ -1,6 +1,10 @@
 # OCC API 
 This project consists of a RESTful API built using the Spring framework. Through the endpoints listed below, users can manage their profiles and accounts, as well as send and receive money through transactions. The main focus of this project has been implementing a robust JWT-based authentication & authorization mechansim and ensuring high concurrency by checking for validity of transactions with the OCC algorithm provided.
 
+## How to Run the API
+Once you have cloned the repo, travel to the /next folder in your terminal of choice and run the command `mvn clean spring-boot:run`. Please wait between 10-30 seconds for the API to start-up. 
+You can interact with the API via Postman. I have provided the json file for all User, Account, and Transaction requests, so that you can import them in your workspace without having to set them up from scratch. First of all, you'll need to register and then login as a user, then you will be able to open/close accounts and place transactions. If you encounter any bug, or would like to suggest an improvement, feel free to create a PR :)
+
 ## API Architecture & Components Overview
 
 #### Database Schema
